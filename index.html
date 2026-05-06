@@ -207,6 +207,29 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .history-empty{text-align:center;padding:3rem;color:var(--text2);}
 
 
+
+/* COACH */
+.coach-bubble{margin-top:1rem;border-radius:var(--radius);padding:0;overflow:hidden;animation:fadeIn 0.3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.coach-inner{display:flex;gap:12px;padding:14px 16px;font-size:14px;line-height:1.65;}
+.coach-inner.correct-msg{background:var(--green-bg);border:1px solid var(--green);}
+.coach-inner.wrong-msg{background:#FFF0F0;border:1px solid #FFBBBB;}
+.coach-inner.neutral-msg{background:#EEF0FF;border:1px solid #C5CAFF;}
+.coach-avatar{font-size:20px;flex-shrink:0;margin-top:1px;}
+.coach-text{color:var(--text);flex:1;}
+.coach-text strong{display:block;font-weight:600;margin-bottom:4px;}
+.coach-loading{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);padding:12px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);}
+.coach-dots{display:flex;gap:4px;}
+.coach-dots span{width:6px;height:6px;border-radius:50%;background:var(--blue);animation:dot 1.2s infinite;}
+.coach-dots span:nth-child(2){animation-delay:0.2s;}
+.coach-dots span:nth-child(3){animation-delay:0.4s;}
+@keyframes dot{0%,80%,100%{transform:scale(0.6);opacity:0.4}40%{transform:scale(1);opacity:1}}
+
+.session-summary{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-top:1.5rem;box-shadow:var(--shadow);}
+.summary-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
+.summary-body{font-size:14px;color:var(--text);line-height:1.75;}
+.summary-loading{font-size:14px;color:var(--text2);display:flex;align-items:center;gap:10px;padding:0.5rem 0;}
+
 .search-result{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:10px;box-shadow:var(--shadow);cursor:pointer;transition:all 0.15s;}
 .search-result:hover{border-color:var(--blue-light);transform:translateY(-1px);box-shadow:var(--shadow-lg);}
 .search-q{font-size:14px;font-weight:500;color:var(--text);line-height:1.5;margin-bottom:8px;}
@@ -245,6 +268,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     <div class="streak-badge">🔥 <span id="streakNum">0</span></div>
   </div>
 </nav>
+
 
 <!-- HOME -->
 <div id="page-home" class="page active">
@@ -349,6 +373,10 @@ F flag · P peek · Enter submit<br>
       <div class="rd wrong"><div class="rd-val" id="resWrong"></div><div class="rd-lbl">Λάθος</div></div>
       <div class="rd"><div class="rd-val" id="resTotal"></div><div class="rd-lbl">Σύνολο</div></div>
     </div>
+  </div>
+  <div class="session-summary" id="sessionSummary" style="display:none;">
+    <div class="summary-title">🤖 AI Coach — Ανάλυση session</div>
+    <div class="summary-body" id="summaryBody"></div>
   </div>
   <div class="results-actions">
     <button class="btn-secondary" onclick="retryChapter()">↺ Ξαναπροσπάθησε</button>
@@ -767,6 +795,7 @@ function selectAnswer(idx){
   document.getElementById('nextBtn').textContent=hasMore?'Επόμενη →':'Δες αποτελέσματα →';
   document.getElementById('nextBtn').style.display='block';
   updateQGrid();
+
 }
 
 function prevQuestion(){
@@ -794,7 +823,9 @@ function finishSession(){
   document.getElementById('resCorrect').textContent=session.correct;
   document.getElementById('resWrong').textContent=session.total-session.correct;
   document.getElementById('resTotal').textContent=session.total;
+  document.getElementById('sessionSummary').style.display='none';
   showPage('results');
+  showSessionSummary(session.correct, session.total, session.wrongInSession);
 }
 
 function retryChapter(){
@@ -925,6 +956,50 @@ function renderHistory(){
   const list=document.getElementById('historyList');
   if(!DB.history.length){ list.innerHTML='<div class="history-empty">Δεν υπάρχουν συνεδρίες ακόμα.</div>'; return; }
   list.innerHTML='<div class="history-list">'+DB.history.map(h=>{ const pct=Math.round(h.correct/h.total*100); const cls=pct>=80?'good':pct>=60?'mid':'bad'; const date=new Date(h.date).toLocaleDateString('el-GR',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}); return `<div class="history-item"><div class="history-score-badge ${cls}">${pct}%</div><div><div class="history-title">${h.chTitle}</div><div class="history-meta">${h.correct}/${h.total} σωστές · ${date}</div></div></div>`; }).join('')+'</div>';
+}
+
+
+// ============================================================
+// AI COACH — Template mode, end-of-session only
+// ============================================================
+
+function getTemplateSummary(pct, wrongItems){
+  const chIds=[...new Set(wrongItems.map(w=>w.chId))];
+  const weakChapters=chIds.map(id=>CHAPTERS.find(c=>c.id===id)?.title).filter(Boolean);
+
+  let mood='', advice='', closing='';
+
+  if(pct===100){
+    mood='🎉 Άριστο! Απάντησες σωστά σε όλες τις ερωτήσεις.';
+    advice='Η γνώση σου στο συγκεκριμένο κεφάλαιο φαίνεται στέρεη. Προχώρα στο επόμενο κεφάλαιο ή δοκίμασε ένα πιο απαιτητικό σετ.';
+  } else if(pct>=80){
+    mood='💪 Πολύ καλή δουλειά! Έχεις καλή κατανόηση του υλικού.';
+    advice=weakChapters.length>0
+      ? `Μικρές αδυναμίες εμφανίζονται στα θέματα: <strong>${weakChapters.join(', ')}</strong>. Αξίζει να ξαναδείς αυτές τις ενότητες στο βιβλίο.`
+      : 'Διάβασε ξανά τα σημεία που δυσκολεύτηκες — η επανάληψη εδραιώνει τη γνώση.';
+  } else if(pct>=60){
+    mood='📖 Καλή προσπάθεια — υπάρχει όμως χώρος για βελτίωση.';
+    advice=weakChapters.length>0
+      ? `Τα κεφάλαια που χρειάζονται επανάληψη: <strong>${weakChapters.join(', ')}</strong>. Επέστρεψε στο βιβλίο και διάβασε τις αντίστοιχες ενότητες προσεκτικά — μην αρκεστείς μόνο στην επεξήγηση της ερώτησης.`
+      : 'Χρειάζεται επανάληψη σε αρκετές έννοιες. Διάβασε πάλι το κεφάλαιο από την αρχή.';
+  } else {
+    mood='📚 Η απόδοση δείχνει ότι το υλικό χρειάζεται περισσότερη δουλειά.';
+    advice=weakChapters.length>0
+      ? `Σημαντικές αδυναμίες στα θέματα: <strong>${weakChapters.join(', ')}</strong>. Συνιστώ να επιστρέψεις στο βιβλίο <em>πριν</em> ξαναδοκιμάσεις το quiz — διάβασε, κάνε σημειώσεις, λύσε ασκήσεις.`
+      : 'Πριν ξαναδοκιμάσεις το quiz, αφιέρωσε χρόνο στο βιβλίο. Η κατανόηση χτίζεται βήμα-βήμα.';
+  }
+
+  closing=`<br><br><span style="color:var(--text2);font-size:13px;">⚠️ <strong>Θυμήσου:</strong> Το quiz είναι εργαλείο <em>αυτοαξιολόγησης</em> — δεν αντικαθιστά τη μελέτη. Η αληθινή κατανόηση της φυσικοχημείας απαιτεί ανάγνωση του βιβλίου, παραγωγή τύπων και λύση ασκήσεων. Είσαι άνθρωπος — μαθαίνεις με κόπο, επανάληψη και κατανόηση, όχι με αναγνώριση επιλογών σε οθόνη.</span>`;
+
+  return `<div style="line-height:1.8;">${mood}<br><br>${advice}${closing}</div>`;
+}
+
+function showSessionSummary(correct, total, wrongItems){
+  const summary=document.getElementById('sessionSummary');
+  const body=document.getElementById('summaryBody');
+  const pct=total>0?Math.round(correct/total*100):0;
+  summary.style.display='block';
+  body.innerHTML=getTemplateSummary(pct, wrongItems);
 }
 
 // INIT
