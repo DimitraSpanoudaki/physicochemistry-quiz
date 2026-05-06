@@ -261,7 +261,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     <div class="nav-link" onclick="showPage('rework')">Rework <span id="reworkCount" style="background:var(--red);color:#fff;font-size:11px;padding:1px 6px;border-radius:10px;margin-left:4px;display:none;"></span></div>
     <div class="nav-link" onclick="showPage('search')">Search</div>
   </div>
-  <div class="nav-stats">
+  <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+    <button onclick="toggleSettings()" id="coachBtn" style="background:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 12px;font-size:13px;color:var(--text2);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;" title="AI Coach">🎓 AI Coach</button>
+  </div>
+  <div class="nav-stats" style="margin-left:1rem;">
     <div><span id="navTotal">0</span> ερωτήσεις</div>
     <div><span id="navAttempts">0</span> attempts</div>
     <div><span id="navFlagged">0</span> flagged</div>
@@ -960,51 +963,126 @@ function renderHistory(){
 
 
 // ============================================================
-// AI COACH — Template mode, end-of-session only
+// AI COACH — Agentic (API) + Template fallback
 // ============================================================
 
+function toggleSettings(){
+  const m=document.getElementById('settingsModal');
+  m.style.display=m.style.display==='flex'?'none':'flex';
+  if(m.style.display==='flex'){
+    const saved=sessionStorage.getItem('coachKey')||localStorage.getItem('coachKey')||'';
+    document.getElementById('coachApiKey').value=saved;
+  }
+}
+function saveCoachKey(){
+  const val=document.getElementById('coachApiKey').value.trim();
+  sessionStorage.setItem('coachKey',val);
+  if(val) localStorage.setItem('coachKey',val);
+  else localStorage.removeItem('coachKey');
+  document.getElementById('settingsMsg').textContent=val?'✓ Key αποθηκεύτηκε':'Key αφαιρέθηκε.';
+  setTimeout(()=>{ document.getElementById('settingsMsg').textContent=''; toggleSettings(); },1200);
+}
+function clearCoachKey(){ sessionStorage.removeItem('coachKey'); localStorage.removeItem('coachKey'); document.getElementById('coachApiKey').value=''; document.getElementById('settingsMsg').textContent='Key διαγράφηκε.'; }
+function getCoachKey(){ return sessionStorage.getItem('coachKey')||localStorage.getItem('coachKey')||''; }
+
+// ── Template fallback (no key) ──────────────────────────────
 function getTemplateSummary(pct, wrongItems){
   const chIds=[...new Set(wrongItems.map(w=>w.chId))];
-  const weakChapters=chIds.map(id=>CHAPTERS.find(c=>c.id===id)?.title).filter(Boolean);
-
-  let mood='', advice='', closing='';
-
-  if(pct===100){
-    mood='🎉 Άριστο! Απάντησες σωστά σε όλες τις ερωτήσεις.';
-    advice='Η γνώση σου στο συγκεκριμένο κεφάλαιο φαίνεται στέρεη. Προχώρα στο επόμενο κεφάλαιο ή δοκίμασε ένα πιο απαιτητικό σετ.';
-  } else if(pct>=80){
-    mood='💪 Πολύ καλή δουλειά! Έχεις καλή κατανόηση του υλικού.';
-    advice=weakChapters.length>0
-      ? `Μικρές αδυναμίες εμφανίζονται στα θέματα: <strong>${weakChapters.join(', ')}</strong>. Αξίζει να ξαναδείς αυτές τις ενότητες στο βιβλίο.`
-      : 'Διάβασε ξανά τα σημεία που δυσκολεύτηκες — η επανάληψη εδραιώνει τη γνώση.';
-  } else if(pct>=60){
-    mood='📖 Καλή προσπάθεια — υπάρχει όμως χώρος για βελτίωση.';
-    advice=weakChapters.length>0
-      ? `Τα κεφάλαια που χρειάζονται επανάληψη: <strong>${weakChapters.join(', ')}</strong>. Επέστρεψε στο βιβλίο και διάβασε τις αντίστοιχες ενότητες προσεκτικά — μην αρκεστείς μόνο στην επεξήγηση της ερώτησης.`
-      : 'Χρειάζεται επανάληψη σε αρκετές έννοιες. Διάβασε πάλι το κεφάλαιο από την αρχή.';
-  } else {
-    mood='📚 Η απόδοση δείχνει ότι το υλικό χρειάζεται περισσότερη δουλειά.';
-    advice=weakChapters.length>0
-      ? `Σημαντικές αδυναμίες στα θέματα: <strong>${weakChapters.join(', ')}</strong>. Συνιστώ να επιστρέψεις στο βιβλίο <em>πριν</em> ξαναδοκιμάσεις το quiz — διάβασε, κάνε σημειώσεις, λύσε ασκήσεις.`
-      : 'Πριν ξαναδοκιμάσεις το quiz, αφιέρωσε χρόνο στο βιβλίο. Η κατανόηση χτίζεται βήμα-βήμα.';
-  }
-
-  closing=`<br><br><span style="color:var(--text2);font-size:13px;">⚠️ <strong>Θυμήσου:</strong> Το quiz είναι εργαλείο <em>αυτοαξιολόγησης</em> — δεν αντικαθιστά τη μελέτη. Η αληθινή κατανόηση της φυσικοχημείας απαιτεί ανάγνωση του βιβλίου, παραγωγή τύπων και λύση ασκήσεων. Είσαι άνθρωπος — μαθαίνεις με κόπο, επανάληψη και κατανόηση, όχι με αναγνώριση επιλογών σε οθόνη.</span>`;
-
-  return `<div style="line-height:1.8;">${mood}<br><br>${advice}${closing}</div>`;
+  const weak=chIds.map(id=>CHAPTERS.find(c=>c.id===id)?.title).filter(Boolean);
+  let mood='', advice='', close='';
+  if(pct===100) mood='Άριστα. Όλες σωστές.';
+  else if(pct>=80) mood='Καλή απόδοση.';
+  else if(pct>=60) mood='Μέτρια. Υπάρχει δουλειά.';
+  else mood='Χρειάζεται πολύ δουλειά.';
+  if(weak.length) advice=`Επανάληψη στα: <strong>${weak.join(', ')}</strong>.`;
+  close=`<br><br><em style="color:var(--text2);font-size:13px;">Θυμήσου: γενιές και γενιές έμαθαν φυσικοχημεία με μολύβι και χαρτί. Το quiz είναι εργαλείο αυτοαξιολόγησης — η μάθηση γίνεται με το βιβλίο.</em>`;
+  return `<div style="line-height:1.8;">${mood} ${advice}${close}</div>`;
 }
 
-function showSessionSummary(correct, total, wrongItems){
+// ── Agentic AI coach (with key) ─────────────────────────────
+async function showSessionSummary(correct, total, wrongItems){
   const summary=document.getElementById('sessionSummary');
   const body=document.getElementById('summaryBody');
-  const pct=total>0?Math.round(correct/total*100):0;
   summary.style.display='block';
-  body.innerHTML=getTemplateSummary(pct, wrongItems);
+  const pct=total>0?Math.round(correct/total*100):0;
+  const key=getCoachKey();
+
+  if(!key){ body.innerHTML=getTemplateSummary(pct,wrongItems); return; }
+
+  // Build context of wrong questions
+  const wrongDescs=wrongItems.slice(0,8).map(w=>{
+    const ch=CHAPTERS.find(c=>c.id===w.chId);
+    const q=ch?.questions[w.qIdx];
+    if(!q) return null;
+    return `• [${ch.title}] ${q.q}\n  Σωστή: ${q.opts[q.correct]}`;
+  }).filter(Boolean).join('\n');
+
+  const chaptersTried=[...new Set(wrongItems.map(w=>w.chId).concat(
+    session.isReworkMode ? session.reworkQueue.map(r=>r.chId) : [session.chapter?.id]
+  ))].map(id=>CHAPTERS.find(c=>c.id===id)?.title).filter(Boolean);
+
+  const SYSTEM=`Είσαι καθηγητής φυσικοχημείας με 35 χρόνια εμπειρία. Έχεις δει χιλιάδες φοιτητές να πέρνουν εξετάσεις — άλλους να επιτυγχάνουν, άλλους να αποτυγχάνουν. Ξέρεις πολύ καλά ότι η πραγματική κατανόηση δεν έρχεται από apps και quiz, αλλά από ώρες μελέτης με μολύβι και χαρτί, από παραγωγή τύπων, από λύση ασκήσεων.
+
+Ο χαρακτήρας σου: σοφός, άμεσος, λίγο καυστικός — όπως οι παλιοί καλοί καθηγητές που δεν σε κολάκευαν αλλά σε έκαναν να μάθεις. Λες την αλήθεια ακόμα κι αν δεν ακούγεται καλά. Χρησιμοποιείς περιστασιακά αφορισμούς ή αναφορές στο πώς μαθαίνανε παλιά. Δεν είσαι σκληρός — νοιάζεσαι πραγματικά.
+
+Γράφεις στα ελληνικά, σε β' ενικό. Μέγεθος: 4-6 προτάσεις. Χωρίς bullet points — συνεχόμενο κείμενο σαν να μιλάς προφορικά.`;
+
+  const USER=`Ο φοιτητής μόλις τελείωσε quiz.
+Αποτέλεσμα: ${correct}/${total} (${pct}%)
+Κεφάλαια: ${chaptersTried.join(', ')||'—'}
+${wrongDescs?`\nΛάθος ερωτήσεις:\n${wrongDescs}`:'\nΔεν έκανε λάθη.'}
+
+Δώσε την ανάλυσή σου ως παλιός καθηγητής. Πες του τι πρέπει να διαβάσει, πώς να το διαβάσει, και υπενθύμισέ του ότι γενιές ανθρώπων έμαθαν αυτά με μολύβι και χαρτί — όχι με app.`;
+
+  // Show loading with typing feel
+  body.innerHTML=`<div style="display:flex;align-items:center;gap:10px;color:var(--text2);font-size:14px;padding:0.5rem 0;">
+    <div class="coach-dots"><span></span><span></span><span></span></div>
+    Ο καθηγητής σκέφτεται...
+  </div>`;
+
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':key,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:400,
+        system:SYSTEM,
+        messages:[{role:'user',content:USER}]
+      })
+    });
+
+    if(!resp.ok){ const err=await resp.json(); throw new Error(err.error?.message||'API error'); }
+    const data=await resp.json();
+    const text=data.content?.[0]?.text||'';
+
+    // Typewriter effect
+    body.innerHTML='<div id="coachText" style="line-height:1.85;font-size:14px;color:var(--text);"></div>';
+    const el=document.getElementById('coachText');
+    let i=0;
+    const interval=setInterval(()=>{
+      if(i<text.length){ el.textContent+=text[i]; i++; }
+      else clearInterval(interval);
+    },18);
+
+  } catch(e){
+    console.error('Coach API error:',e);
+    body.innerHTML=getTemplateSummary(pct,wrongItems)+
+      `<div style="font-size:12px;color:var(--text3);margin-top:8px;">⚠ AI unavailable: ${e.message}</div>`;
+  }
 }
 
 // INIT
 loadDB();
 renderHome();
+// Show coach active state if key saved
+if(getCoachKey()){ const b=document.getElementById('coachBtn'); if(b){ b.style.borderColor='var(--blue)'; b.style.color='var(--blue)'; b.textContent='🎓 AI Coach ✓'; } }
+
 </script>
 
 <!-- SEARCH -->
@@ -1017,6 +1095,29 @@ renderHome();
     <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--text3);">🔍</span>
   </div>
   <div id="searchResults"></div>
+</div>
+
+
+<!-- SETTINGS MODAL -->
+<div id="settingsModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:999;align-items:center;justify-content:center;">
+  <div style="background:var(--surface);border-radius:var(--radius);padding:2rem;max-width:460px;width:92%;box-shadow:var(--shadow-lg);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <div style="font-size:16px;font-weight:600;">🎓 AI Coach — Ρυθμίσεις</div>
+      <button onclick="toggleSettings()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text2);">✕</button>
+    </div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.65;">
+      Ο AI Coach ενεργοποιείται στο τέλος κάθε quiz και αναλύει την απόδοσή σου ως παλιός καθηγητής — σοφός, λίγο καυστικός, πάντα ουσιαστικός.<br><br>
+      Χρειάζεται <strong>Anthropic API key</strong>. Χωρίς key, εμφανίζεται έτοιμο μήνυμα.
+    </p>
+    <label style="font-size:13px;font-weight:500;display:block;margin-bottom:6px;">Anthropic API Key</label>
+    <input type="password" id="coachApiKey" placeholder="sk-ant-api03-..."
+      style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:monospace;font-size:13px;background:var(--bg);color:var(--text);margin-bottom:12px;outline:none;"/>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button onclick="clearCoachKey()" style="padding:9px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);background:none;cursor:pointer;font-family:inherit;font-size:13px;color:var(--text);">Διαγραφή</button>
+      <button onclick="saveCoachKey()" style="padding:9px 16px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;">Αποθήκευση</button>
+    </div>
+    <div id="settingsMsg" style="font-size:12px;margin-top:8px;color:var(--green-dark);min-height:18px;"></div>
+  </div>
 </div>
 
 </body>
