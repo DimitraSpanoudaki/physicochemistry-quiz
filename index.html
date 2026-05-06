@@ -1,773 +1,621 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Φυσικοχημεία — Quiz</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #F7F6F2;
-      --surface: #FFFFFF;
-      --surface2: #F0EEE8;
-      --border: #E0DDD4;
-      --border2: #C8C5BB;
-      --text: #1A1916;
-      --text2: #6B6860;
-      --text3: #9B9890;
-      --green: #1D9E75;
-      --green-bg: #E1F5EE;
-      --green-dark: #0F6E56;
-      --red: #E24B4A;
-      --red-bg: #FCEBEB;
-      --red-dark: #A32D2D;
-      --accent: #3A5CCC;
-      --radius: 10px;
-      --radius-sm: 6px;
-    }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Φυσικοχημεία — Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --blue: #3B3DBF;
+  --blue-dark: #2D2F9E;
+  --blue-deeper: #1E1F7A;
+  --blue-light: #5557D4;
+  --yellow: #F5A623;
+  --yellow-light: #FFD166;
+  --bg: #F4F5FB;
+  --surface: #FFFFFF;
+  --surface2: #F0F1FA;
+  --border: #E2E4F0;
+  --text: #1A1B2E;
+  --text2: #6B6E8E;
+  --text3: #9B9EB8;
+  --green: #22C78A;
+  --green-bg: #E6FAF4;
+  --green-dark: #0F7A55;
+  --red: #F05252;
+  --red-bg: #FEF0F0;
+  --red-dark: #9B1C1C;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 2px 12px rgba(59,61,191,0.08);
+  --shadow-lg: 0 8px 32px rgba(59,61,191,0.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+/* NAV */
+.nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; gap: 0; height: 56px; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
+.nav-logo { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; color: var(--blue); margin-right: 2rem; }
+.nav-logo-icon { background: var(--blue); color: #fff; width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.nav-links { display: flex; gap: 0; flex: 1; }
+.nav-link { padding: 0 16px; height: 56px; display: flex; align-items: center; font-size: 14px; font-weight: 500; color: var(--text2); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; }
+.nav-link:hover { color: var(--blue); }
+.nav-link.active { color: var(--blue); border-bottom-color: var(--blue); }
+.nav-stats { display: flex; gap: 20px; align-items: center; font-size: 13px; color: var(--text2); }
+.nav-stat span { color: var(--text); font-weight: 600; }
+.streak-badge { display: flex; align-items: center; gap: 4px; background: #FFF5E6; color: #B45309; padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: 600; }
 
-    body {
-      font-family: 'IBM Plex Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 2rem 1rem;
-    }
+/* PAGES */
+.page { display: none; padding: 2rem; max-width: 1100px; margin: 0 auto; }
+.page.active { display: block; }
 
-    .container {
-      max-width: 700px;
-      margin: 0 auto;
-    }
+/* HOME HERO */
+.hero { background: linear-gradient(135deg, var(--blue) 0%, var(--blue-deeper) 100%); border-radius: var(--radius); padding: 2.5rem; color: #fff; margin-bottom: 2rem; position: relative; overflow: hidden; display: flex; justify-content: space-between; align-items: center; }
+.hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 220px; height: 220px; background: rgba(255,255,255,0.05); border-radius: 50%; }
+.hero-left { flex: 1; }
+.hero-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.7; margin-bottom: 8px; }
+.hero-title { font-size: 28px; font-weight: 700; margin-bottom: 10px; line-height: 1.2; }
+.hero-sub { font-size: 14px; opacity: 0.8; margin-bottom: 1.5rem; line-height: 1.6; }
+.hero-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-hero-primary { background: var(--yellow); color: #1A1B2E; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 6px; }
+.btn-hero-primary:hover { background: var(--yellow-light); }
+.btn-hero-secondary { background: rgba(255,255,255,0.15); color: #fff; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; border: 1px solid rgba(255,255,255,0.25); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 6px; }
+.btn-hero-secondary:hover { background: rgba(255,255,255,0.25); }
+.hero-right { text-align: center; margin-left: 2rem; }
+.readiness-ring { position: relative; width: 120px; height: 120px; }
+.readiness-ring svg { transform: rotate(-90deg); }
+.readiness-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+.readiness-num { font-size: 28px; font-weight: 700; color: #fff; line-height: 1; }
+.readiness-lbl { font-size: 10px; opacity: 0.7; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+.hero-stats-row { display: flex; gap: 2rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.15); }
+.hero-stat { text-align: center; }
+.hero-stat-val { font-size: 24px; font-weight: 700; }
+.hero-stat-val.yellow { color: var(--yellow); }
+.hero-stat-lbl { font-size: 11px; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
 
-    /* HEADER */
-    .site-header {
-      margin-bottom: 2.5rem;
-      padding-bottom: 1.5rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .site-header h1 {
-      font-size: 26px;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      color: var(--text);
-      margin-bottom: 4px;
-    }
-    .site-header p {
-      font-size: 14px;
-      color: var(--text2);
-    }
+/* STREAK */
+.streak-row { display: flex; align-items: center; gap: 12px; margin-top: 1.25rem; }
+.streak-dots { display: flex; gap: 4px; }
+.streak-dot { width: 16px; height: 16px; border-radius: 4px; background: rgba(255,255,255,0.2); }
+.streak-dot.done { background: var(--yellow); }
+.streak-dot.today { background: var(--yellow); box-shadow: 0 0 0 2px rgba(245,166,35,0.4); }
 
-    /* SCREENS */
-    .screen { display: none; }
-    .screen.active { display: block; }
+/* SECTION HEADERS */
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text2); }
+.section-count { font-size: 13px; color: var(--text3); }
 
-    /* STATS ROW */
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 2rem;
-    }
-    .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1rem 1.25rem;
-    }
-    .stat-label { font-size: 12px; color: var(--text2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
-    .stat-value { font-size: 28px; font-weight: 600; color: var(--text); font-family: 'IBM Plex Mono', monospace; }
+/* CHAPTER GRID */
+.chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-bottom: 2rem; }
+.chapter-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; cursor: pointer; transition: all 0.15s; box-shadow: var(--shadow); }
+.chapter-card:hover { border-color: var(--blue-light); box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+.chapter-card.done { border-color: var(--green); }
+.ch-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.ch-num-badge { font-size: 11px; font-weight: 600; color: var(--blue); background: #EEEFFE; padding: 2px 8px; border-radius: 20px; }
+.ch-check { color: var(--green); font-size: 16px; }
+.ch-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.ch-meta { font-size: 12px; color: var(--text2); margin-bottom: 12px; }
+.ch-bar { height: 4px; background: var(--border); border-radius: 2px; }
+.ch-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--blue-light)); border-radius: 2px; transition: width 0.4s; }
+.ch-footer { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: var(--text3); }
 
-    /* CHAPTER GRID */
-    .section-label {
-      font-size: 12px; font-weight: 500; color: var(--text2);
-      text-transform: uppercase; letter-spacing: 0.06em;
-      margin-bottom: 12px;
-    }
-    .chapter-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 10px;
-      margin-bottom: 2rem;
-    }
-    .chapter-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.1rem 1.25rem;
-      cursor: pointer;
-      transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
-      user-select: none;
-    }
-    .chapter-card:hover {
-      border-color: var(--border2);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-      transform: translateY(-1px);
-    }
-    .chapter-card:active { transform: translateY(0); }
-    .chapter-card.done { border-color: var(--green); }
-    .ch-meta {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 8px;
-    }
-    .ch-num { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
-    .ch-check { font-size: 14px; color: var(--green); }
-    .ch-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 5px; }
-    .ch-count { font-size: 12px; color: var(--text2); margin-bottom: 10px; }
-    .ch-bar { height: 3px; background: var(--border); border-radius: 2px; }
-    .ch-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width 0.4s; }
+/* QUIZ PAGE */
+.quiz-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+.quiz-back { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--text2); cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; }
+.quiz-back:hover { color: var(--blue); }
+.quiz-chapter-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.flag-btn { background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px 12px; font-size: 13px; color: var(--text2); cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.15s; }
+.flag-btn:hover, .flag-btn.flagged { background: #FFF5E6; border-color: var(--yellow); color: #B45309; }
 
-    /* QUIZ SCREEN */
-    .quiz-nav {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 1.5rem;
-    }
-    .back-btn {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 13px; color: var(--text2);
-      cursor: pointer; border: none; background: none; padding: 0;
-      font-family: inherit;
-    }
-    .back-btn:hover { color: var(--text); }
-    .back-arrow { font-size: 16px; }
-    .quiz-chapter-title { font-size: 14px; font-weight: 500; color: var(--text); }
+.prog-row { display: flex; align-items: center; gap: 12px; margin-bottom: 1.75rem; }
+.prog-bar { flex: 1; height: 6px; background: var(--border); border-radius: 3px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--blue-light)); border-radius: 3px; transition: width 0.3s; }
+.prog-text { font-size: 12px; color: var(--text2); white-space: nowrap; font-weight: 500; }
 
-    .progress-row {
-      display: flex; align-items: center; gap: 12px;
-      margin-bottom: 1.75rem;
-    }
-    .prog-bar { flex: 1; height: 4px; background: var(--border); border-radius: 2px; }
-    .prog-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width 0.3s; }
-    .prog-text { font-size: 12px; color: var(--text2); font-family: 'IBM Plex Mono', monospace; white-space: nowrap; }
+.question-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; margin-bottom: 1rem; box-shadow: var(--shadow); }
+.question-text { font-size: 17px; line-height: 1.65; color: var(--text); margin-bottom: 1.75rem; font-weight: 500; }
 
-    .question-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.75rem;
-      margin-bottom: 1rem;
-    }
-    .question-text {
-      font-size: 16px; line-height: 1.65; color: var(--text);
-      margin-bottom: 1.5rem; font-weight: 500;
-    }
+.options { display: flex; flex-direction: column; gap: 10px; }
+.option { display: flex; align-items: flex-start; gap: 14px; background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; cursor: pointer; transition: all 0.15s; font-size: 15px; color: var(--text); line-height: 1.5; }
+.option:hover:not(.disabled) { border-color: var(--blue-light); background: #F0F1FA; }
+.option.correct { background: var(--green-bg); border-color: var(--green); color: var(--green-dark); }
+.option.wrong { background: var(--red-bg); border-color: var(--red); color: var(--red-dark); }
+.option.disabled { cursor: default; }
+.opt-letter { font-weight: 700; min-width: 22px; font-size: 14px; color: var(--blue); flex-shrink: 0; }
+.option.correct .opt-letter { color: var(--green-dark); }
+.option.wrong .opt-letter { color: var(--red-dark); }
 
-    .options { display: flex; flex-direction: column; gap: 8px; }
-    .option {
-      display: flex; align-items: flex-start; gap: 12px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 12px 16px;
-      cursor: pointer;
-      transition: all 0.15s;
-      font-size: 14px; color: var(--text); line-height: 1.5;
-    }
-    .option:hover:not(.disabled) {
-      border-color: var(--border2);
-      background: var(--surface2);
-    }
-    .option.correct { background: var(--green-bg); border-color: var(--green); color: var(--green-dark); }
-    .option.wrong { background: var(--red-bg); border-color: var(--red); color: var(--red-dark); }
-    .option.disabled { cursor: default; }
-    .opt-letter {
-      font-weight: 600; min-width: 20px; font-size: 13px;
-      font-family: 'IBM Plex Mono', monospace;
-    }
+.explanation { display: none; margin-top: 1.25rem; padding: 16px 18px; background: #EEF0FF; border-left: 3px solid var(--blue); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-size: 14px; line-height: 1.7; color: #2D2F6E; }
+.explanation.show { display: block; }
+.explanation strong { font-weight: 600; }
 
-    .explanation {
-      display: none;
-      margin-top: 1.25rem;
-      padding: 14px 16px;
-      background: #EEF3FF;
-      border-left: 3px solid var(--accent);
-      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-      font-size: 13px; line-height: 1.65; color: #1e2d5a;
-    }
-    .explanation.show { display: block; }
-    .explanation strong { font-weight: 600; }
+.quiz-footer { display: flex; justify-content: flex-end; margin-top: 1rem; }
+.btn-primary { background: var(--blue); color: #fff; padding: 11px 24px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+.btn-primary:hover { background: var(--blue-light); }
+.btn-secondary { background: var(--surface); color: var(--text); padding: 11px 24px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; border: 1px solid var(--border); cursor: pointer; transition: all 0.15s; font-family: inherit; }
+.btn-secondary:hover { background: var(--surface2); }
 
-    .quiz-footer {
-      display: flex; justify-content: flex-end;
-      margin-top: 1rem;
-    }
+/* RESULTS */
+.results-card { background: linear-gradient(135deg, var(--blue), var(--blue-deeper)); border-radius: var(--radius); padding: 2.5rem; text-align: center; color: #fff; margin-bottom: 1.5rem; }
+.res-score { font-size: 64px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.02em; }
+.res-label { font-size: 16px; opacity: 0.8; margin-bottom: 2rem; }
+.res-details { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.rd { padding: 14px; background: rgba(255,255,255,0.12); border-radius: var(--radius-sm); }
+.rd-val { font-size: 24px; font-weight: 700; }
+.rd.correct .rd-val { color: #6EFFC7; }
+.rd.wrong .rd-val { color: #FF9A9A; }
+.rd-lbl { font-size: 12px; opacity: 0.65; margin-top: 3px; }
+.results-actions { display: flex; gap: 10px; justify-content: center; margin-top: 1.5rem; }
 
-    /* BUTTONS */
-    button {
-      font-family: 'IBM Plex Sans', sans-serif;
-      font-size: 14px; font-weight: 500;
-      padding: 10px 20px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border2);
-      background: var(--surface);
-      color: var(--text);
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    button:hover { background: var(--surface2); border-color: var(--text2); }
-    button:active { transform: scale(0.98); }
-    button.primary {
-      background: var(--text);
-      color: #fff;
-      border-color: var(--text);
-    }
-    button.primary:hover { opacity: 0.85; }
+/* DASHBOARD */
+.dash-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 2rem; }
+.dash-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow); }
+.dash-label { font-size: 12px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+.dash-value { font-size: 32px; font-weight: 700; color: var(--text); }
+.dash-sub { font-size: 12px; color: var(--text3); margin-top: 4px; }
+.dash-value.blue { color: var(--blue); }
+.dash-value.green { color: var(--green-dark); }
+.dash-value.yellow { color: #B45309; }
 
-    /* RESULTS SCREEN */
-    .results-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 2.5rem;
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-    .res-score {
-      font-size: 56px; font-weight: 600;
-      font-family: 'IBM Plex Mono', monospace;
-      color: var(--text); margin-bottom: 6px;
-      letter-spacing: -0.02em;
-    }
-    .res-label { font-size: 15px; color: var(--text2); margin-bottom: 2rem; }
-    .res-details {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 10px; text-align: center;
-    }
-    .rd {
-      padding: 12px;
-      background: var(--bg);
-      border-radius: var(--radius-sm);
-    }
-    .rd-val { font-size: 22px; font-weight: 600; font-family: 'IBM Plex Mono', monospace; }
-    .rd.correct .rd-val { color: var(--green-dark); }
-    .rd.wrong .rd-val { color: var(--red-dark); }
-    .rd-lbl { font-size: 12px; color: var(--text2); margin-top: 3px; }
+.analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 2rem; }
+.analytics-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); }
+.analytics-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 1.25rem; }
 
-    .results-actions { display: flex; gap: 10px; justify-content: center; }
+.chapter-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.chapter-bar-label { font-size: 13px; color: var(--text2); min-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chapter-bar-track { flex: 1; height: 8px; background: var(--border); border-radius: 4px; }
+.chapter-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--blue), var(--blue-light)); transition: width 0.5s; }
+.chapter-bar-fill.low { background: linear-gradient(90deg, var(--red), #FF8A8A); }
+.chapter-bar-fill.mid { background: linear-gradient(90deg, var(--yellow), var(--yellow-light)); }
+.chapter-bar-pct { font-size: 12px; font-weight: 600; color: var(--text2); min-width: 36px; text-align: right; }
 
-    /* RESET NOTICE */
-    .reset-row {
-      margin-top: 2.5rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .reset-row p { font-size: 13px; color: var(--text3); }
-    .reset-btn {
-      font-size: 12px; color: var(--text3); background: none;
-      border: 1px solid var(--border); padding: 6px 14px;
-    }
-    .reset-btn:hover { color: var(--red); border-color: var(--red); background: var(--red-bg); }
+.recent-list { display: flex; flex-direction: column; gap: 8px; }
+.recent-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--bg); border-radius: var(--radius-sm); font-size: 13px; }
+.recent-badge { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.recent-badge.good { background: var(--green-bg); color: var(--green-dark); }
+.recent-badge.bad { background: var(--red-bg); color: var(--red-dark); }
+.recent-name { flex: 1; color: var(--text); font-weight: 500; }
+.recent-score { color: var(--text2); }
 
-    @media (max-width: 500px) {
-      .stats-row { grid-template-columns: 1fr 1fr; }
-      .stats-row .stat-card:last-child { grid-column: span 2; }
-      .chapter-grid { grid-template-columns: 1fr 1fr; }
-      .res-details { grid-template-columns: 1fr; }
-      .results-actions { flex-direction: column; }
-    }
-  </style>
+/* REWORK PAGE */
+.rework-empty { text-align: center; padding: 4rem 2rem; color: var(--text2); }
+.rework-empty-icon { font-size: 48px; margin-bottom: 1rem; }
+.rework-empty-title { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.rework-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 2rem; }
+.rework-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; display: flex; align-items: flex-start; gap: 14px; box-shadow: var(--shadow); }
+.rework-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+.rework-q { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.5; flex: 1; }
+.rework-meta { font-size: 12px; color: var(--text3); margin-top: 4px; }
+.rework-actions { display: flex; gap: 8px; margin-top: 1.5rem; }
+
+/* HISTORY PAGE */
+.history-list { display: flex; flex-direction: column; gap: 10px; }
+.history-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow); }
+.history-score-badge { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; flex-shrink: 0; }
+.history-score-badge.good { background: var(--green-bg); color: var(--green-dark); }
+.history-score-badge.mid { background: #FFF5E6; color: #B45309; }
+.history-score-badge.bad { background: var(--red-bg); color: var(--red-dark); }
+.history-info { flex: 1; }
+.history-title { font-size: 15px; font-weight: 600; color: var(--text); }
+.history-meta { font-size: 13px; color: var(--text2); margin-top: 3px; }
+.history-empty { text-align: center; padding: 3rem; color: var(--text2); }
+
+@media (max-width: 700px) {
+  .dash-grid { grid-template-columns: 1fr 1fr; }
+  .analytics-grid { grid-template-columns: 1fr; }
+  .hero { flex-direction: column; }
+  .hero-right { margin-left: 0; margin-top: 1.5rem; }
+  .hero-stats-row { gap: 1rem; }
+  .chapter-grid { grid-template-columns: 1fr 1fr; }
+  .res-details { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+</style>
 </head>
 <body>
-<div class="container">
 
-  <div class="site-header">
-    <h1>Φυσικοχημεία — Quiz</h1>
-    <p>Επίλεξε κεφάλαιο και ξεκίνα εξάσκηση</p>
+<nav class="nav">
+  <div class="nav-logo"><div class="nav-logo-icon">⚗</div> Φυσικοχημεία</div>
+  <div class="nav-links">
+    <div class="nav-link active" onclick="showPage('home')">Tests</div>
+    <div class="nav-link" onclick="showPage('dashboard')">Dashboard</div>
+    <div class="nav-link" onclick="showPage('history')">History</div>
+    <div class="nav-link" onclick="showPage('rework')">Rework <span id="reworkCount" style="background:var(--red);color:#fff;font-size:11px;padding:1px 6px;border-radius:10px;margin-left:4px;display:none;"></span></div>
   </div>
-
-  <!-- HOME SCREEN -->
-  <div id="homeScreen" class="screen active">
-    <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-label">Ερωτήσεις</div>
-        <div class="stat-value" id="totalDone">0</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Σωστές</div>
-        <div class="stat-value" id="totalCorrect">0</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Επιτυχία</div>
-        <div class="stat-value" id="totalPct">—</div>
-      </div>
-    </div>
-
-    <div class="section-label">Κεφάλαια</div>
-    <div class="chapter-grid" id="chapterGrid"></div>
-
-    <div class="reset-row">
-      <p>Επαναφορά όλης της προόδου</p>
-      <button class="reset-btn" onclick="resetAll()">Επαναφορά</button>
-    </div>
+  <div class="nav-stats">
+    <div><span id="navTotal">0</span> ερωτήσεις</div>
+    <div><span id="navAttempts">0</span> attempts</div>
+    <div id="streakBadge" class="streak-badge">🔥 <span id="streakNum">0</span></div>
   </div>
+</nav>
 
-  <!-- QUIZ SCREEN -->
-  <div id="quizScreen" class="screen">
-    <div class="quiz-nav">
-      <button class="back-btn" onclick="goHome()">
-        <span class="back-arrow">←</span> Κεφάλαια
-      </button>
-      <span class="quiz-chapter-title" id="quizTitle"></span>
+<!-- HOME PAGE -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-label">Φυσικοχημεία Quiz</div>
+      <div class="hero-title">Μελέτη με αποτελέσματα.</div>
+      <div class="hero-sub" id="heroSub">Επίλεξε κεφάλαιο και ξεκίνα εξάσκηση.</div>
+      <div class="hero-btns">
+        <button class="btn-hero-primary" id="heroDueBtn" onclick="startRework()">⏰ Rework λάθη (<span id="heroDueNum">0</span>)</button>
+        <button class="btn-hero-secondary" onclick="showPage('dashboard')">📊 Dashboard</button>
+      </div>
+      <div class="streak-row">
+        <span style="font-size:13px;opacity:0.8;">🔥 <span id="heroStreak">0</span>-day streak</span>
+        <div class="streak-dots" id="streakDots"></div>
+      </div>
+      <div class="hero-stats-row">
+        <div class="hero-stat"><div class="hero-stat-val" id="heroAttempts">0</div><div class="hero-stat-lbl">Attempts</div></div>
+        <div class="hero-stat"><div class="hero-stat-val" id="heroAvg">—</div><div class="hero-stat-lbl">Avg Score</div></div>
+        <div class="hero-stat"><div class="hero-stat-val yellow" id="heroRework">0</div><div class="hero-stat-lbl">To Rework</div></div>
+      </div>
     </div>
-
-    <div class="progress-row">
-      <div class="prog-bar"><div class="prog-fill" id="quizProgress" style="width:0%"></div></div>
-      <span class="prog-text" id="quizProgressText">1 / ?</span>
-    </div>
-
-    <div class="question-card">
-      <div class="question-text" id="questionText"></div>
-      <div class="options" id="optionsContainer"></div>
-      <div class="explanation" id="explanation"></div>
-    </div>
-
-    <div class="quiz-footer">
-      <button class="primary" id="nextBtn" style="display:none;" onclick="nextQuestion()">Επόμενη →</button>
+    <div class="hero-right">
+      <div class="readiness-ring">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="10"/>
+          <circle cx="60" cy="60" r="50" fill="none" stroke="#F5A623" stroke-width="10" stroke-linecap="round" id="readinessArc" stroke-dasharray="314" stroke-dashoffset="314"/>
+        </svg>
+        <div class="readiness-center"><div class="readiness-num" id="readinessNum">0</div><div class="readiness-lbl">READINESS</div></div>
+      </div>
     </div>
   </div>
 
-  <!-- RESULTS SCREEN -->
-  <div id="resultsScreen" class="screen">
-    <div class="results-card">
-      <div class="res-score" id="resultScore"></div>
-      <div class="res-label" id="resultLabel"></div>
-      <div class="res-details">
-        <div class="rd correct">
-          <div class="rd-val" id="resCorrect"></div>
-          <div class="rd-lbl">Σωστές</div>
-        </div>
-        <div class="rd wrong">
-          <div class="rd-val" id="resWrong"></div>
-          <div class="rd-lbl">Λάθος</div>
-        </div>
-        <div class="rd">
-          <div class="rd-val" id="resTotal"></div>
-          <div class="rd-lbl">Σύνολο</div>
-        </div>
-      </div>
-    </div>
-    <div class="results-actions">
-      <button onclick="retryChapter()">Ξαναπροσπάθησε</button>
-      <button class="primary" onclick="goHome()">Επιλογή κεφαλαίου</button>
+  <div class="section-header">
+    <div class="section-title">Κεφάλαια</div>
+    <div class="section-count" id="chaptersCount"></div>
+  </div>
+  <div class="chapter-grid" id="chapterGrid"></div>
+</div>
+
+<!-- QUIZ PAGE -->
+<div id="page-quiz" class="page">
+  <div class="quiz-header">
+    <button class="quiz-back" onclick="goHome()">← Κεφάλαια</button>
+    <span class="quiz-chapter-name" id="quizTitle"></span>
+    <button class="flag-btn" id="flagBtn" onclick="toggleFlag()">🚩 Flag</button>
+  </div>
+  <div class="prog-row">
+    <div class="prog-bar"><div class="prog-fill" id="quizProgress" style="width:0%"></div></div>
+    <span class="prog-text" id="quizProgressText">1 / ?</span>
+  </div>
+  <div class="question-card">
+    <div class="question-text" id="questionText"></div>
+    <div class="options" id="optionsContainer"></div>
+    <div class="explanation" id="explanation"></div>
+  </div>
+  <div class="quiz-footer">
+    <button class="btn-primary" id="nextBtn" style="display:none;" onclick="nextQuestion()">Επόμενη →</button>
+  </div>
+</div>
+
+<!-- RESULTS PAGE -->
+<div id="page-results" class="page">
+  <div class="results-card">
+    <div class="res-score" id="resultScore"></div>
+    <div class="res-label" id="resultLabel"></div>
+    <div class="res-details">
+      <div class="rd correct"><div class="rd-val" id="resCorrect"></div><div class="rd-lbl">Σωστές</div></div>
+      <div class="rd wrong"><div class="rd-val" id="resWrong"></div><div class="rd-lbl">Λάθος</div></div>
+      <div class="rd"><div class="rd-val" id="resTotal"></div><div class="rd-lbl">Σύνολο</div></div>
     </div>
   </div>
+  <div class="results-actions">
+    <button class="btn-secondary" onclick="retryChapter()">↺ Ξαναπροσπάθησε</button>
+    <button class="btn-primary" onclick="goHome()">Επιλογή κεφαλαίου →</button>
+  </div>
+</div>
 
+<!-- DASHBOARD PAGE -->
+<div id="page-dashboard" class="page">
+  <div class="section-header" style="margin-bottom:1.5rem;">
+    <div class="section-title">Dashboard & Analytics</div>
+  </div>
+  <div class="dash-grid">
+    <div class="dash-card"><div class="dash-label">Ερωτήσεις</div><div class="dash-value blue" id="dTotal">0</div><div class="dash-sub">σύνολο απαντήσεων</div></div>
+    <div class="dash-card"><div class="dash-label">Avg Score</div><div class="dash-value" id="dAvg">—</div><div class="dash-sub">μέσος όρος</div></div>
+    <div class="dash-card"><div class="dash-label">Mastered</div><div class="dash-value green" id="dMastered">0</div><div class="dash-sub">κεφάλαια ≥80%</div></div>
+    <div class="dash-card"><div class="dash-label">To Rework</div><div class="dash-value yellow" id="dRework">0</div><div class="dash-sub">λάθος ερωτήσεις</div></div>
+  </div>
+  <div class="analytics-grid">
+    <div class="analytics-card">
+      <div class="analytics-title">Απόδοση ανά κεφάλαιο</div>
+      <div id="chapterBars"></div>
+    </div>
+    <div class="analytics-card">
+      <div class="analytics-title">Πρόσφατες συνεδρίες</div>
+      <div class="recent-list" id="recentList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- REWORK PAGE -->
+<div id="page-rework" class="page">
+  <div class="section-header" style="margin-bottom:1.5rem;">
+    <div class="section-title">Rework — Λάθος ερωτήσεις</div>
+  </div>
+  <div id="reworkContent"></div>
+</div>
+
+<!-- HISTORY PAGE -->
+<div id="page-history" class="page">
+  <div class="section-header" style="margin-bottom:1.5rem;">
+    <div class="section-title">Ιστορικό συνεδριών</div>
+  </div>
+  <div id="historyList"></div>
 </div>
 
 <script>
 // ============================================================
-// ΕΡΩΤΗΣΕΙΣ — Εδώ προσθέτεις / τροποποιείς ερωτήσεις
-// Κάθε κεφάλαιο έχει: id, title, questions[]
-// Κάθε ερώτηση έχει: q (κείμενο), opts[] (4 επιλογές), correct (0-3), exp (επεξήγηση)
+// ΕΡΩΤΗΣΕΙΣ
 // ============================================================
 const CHAPTERS = [
   {
-    id: 1,
-    title: "Θερμοδυναμική",
+    id: 1, title: "Θερμοδυναμική",
     questions: [
-      {
-        q: "Ποια είναι η μαθηματική έκφραση του πρώτου νόμου της θερμοδυναμικής;",
-        opts: ["ΔU = q + w", "ΔG = ΔH − TΔS", "ΔS = q_rev / T", "PV = nRT"],
-        correct: 0,
-        exp: "Ο πρώτος νόμος ορίζει ότι η μεταβολή εσωτερικής ενέργειας (ΔU) ισούται με το άθροισμα θερμότητας (q) και έργου (w) που ανταλλάσσει το σύστημα."
-      },
-      {
-        q: "Τι εκφράζει η ενέργεια Gibbs (G);",
-        opts: [
-          "Την εσωτερική ενέργεια ενός συστήματος",
-          "Το κριτήριο αυθόρμητης αντίδρασης σε σταθερές T και P",
-          "Την εντροπία του σύμπαντος",
-          "Τη θερμοχωρητικότητα σε σταθερό όγκο"
-        ],
-        correct: 1,
-        exp: "Η ΔG = ΔH − TΔS είναι αρνητική για αυθόρμητες διεργασίες σε σταθερή θερμοκρασία και πίεση."
-      },
-      {
-        q: "Ποια δήλωση για την εντροπία είναι σωστή σύμφωνα με τον δεύτερο νόμο;",
-        opts: [
-          "Η εντροπία κλειστού συστήματος μπορεί να μειωθεί αυθόρμητα",
-          "Η συνολική εντροπία του σύμπαντος αυξάνεται σε κάθε μη αντιστρεπτή διεργασία",
-          "Η εντροπία είναι συνάρτηση μόνο της πίεσης",
-          "Κάθε αντίδραση με ΔS > 0 είναι αυθόρμητη"
-        ],
-        correct: 1,
-        exp: "Ο δεύτερος νόμος: ΔS_σύμπαν ≥ 0. Σε αντιστρεπτές διεργασίες ΔS = 0, σε μη αντιστρεπτές ΔS > 0."
-      },
-      {
-        q: "Τι ορίζει ο τρίτος νόμος της θερμοδυναμικής;",
-        opts: [
-          "Η ενέργεια δεν δημιουργείται ούτε καταστρέφεται",
-          "Η εντροπία τέλεια κρυστάλλου στο απόλυτο μηδέν είναι μηδέν",
-          "Η θερμότητα ρέει από ψυχρό σε θερμό",
-          "Το έργο ισούται πάντα με P·ΔV"
-        ],
-        correct: 1,
-        exp: "Ο τρίτος νόμος θέτει το απόλυτο μηδέν ως σημείο αναφοράς: S(0K) = 0 για τέλειο κρύσταλλο."
-      },
-      {
-        q: "Σε ποια συνθήκη μια χημική αντίδραση είναι αυθόρμητη ανεξαρτήτως θερμοκρασίας;",
-        opts: ["ΔH > 0 και ΔS < 0", "ΔH < 0 και ΔS < 0", "ΔH < 0 και ΔS > 0", "ΔH > 0 και ΔS > 0"],
-        correct: 2,
-        exp: "Όταν ΔH < 0 (εξώθερμη) και ΔS > 0, τότε ΔG = ΔH − TΔS είναι πάντα αρνητική ανεξαρτήτως θερμοκρασίας."
-      }
+      { q: "Ποια είναι η μαθηματική έκφραση του πρώτου νόμου της θερμοδυναμικής;", opts: ["ΔU = q + w", "ΔG = ΔH − TΔS", "ΔS = q_rev / T", "PV = nRT"], correct: 0, exp: "Ο πρώτος νόμος ορίζει ότι η μεταβολή εσωτερικής ενέργειας (ΔU) ισούται με το άθροισμα θερμότητας (q) και έργου (w) που ανταλλάσσει το σύστημα." },
+      { q: "Τι εκφράζει η ενέργεια Gibbs (G);", opts: ["Την εσωτερική ενέργεια ενός συστήματος", "Το κριτήριο αυθόρμητης αντίδρασης σε σταθερές T και P", "Την εντροπία του σύμπαντος", "Τη θερμοχωρητικότητα σε σταθερό όγκο"], correct: 1, exp: "Η ΔG = ΔH − TΔS είναι αρνητική για αυθόρμητες διεργασίες σε σταθερή θερμοκρασία και πίεση." },
+      { q: "Ποια δήλωση για την εντροπία είναι σωστή σύμφωνα με τον δεύτερο νόμο;", opts: ["Η εντροπία κλειστού συστήματος μπορεί να μειωθεί αυθόρμητα", "Η συνολική εντροπία του σύμπαντος αυξάνεται σε κάθε μη αντιστρεπτή διεργασία", "Η εντροπία είναι συνάρτηση μόνο της πίεσης", "Κάθε αντίδραση με ΔS > 0 είναι αυθόρμητη"], correct: 1, exp: "Ο δεύτερος νόμος: ΔS_σύμπαν ≥ 0. Σε αντιστρεπτές διεργασίες ΔS = 0, σε μη αντιστρεπτές ΔS > 0." },
+      { q: "Τι ορίζει ο τρίτος νόμος της θερμοδυναμικής;", opts: ["Η ενέργεια δεν δημιουργείται ούτε καταστρέφεται", "Η εντροπία τέλεια κρυστάλλου στο απόλυτο μηδέν είναι μηδέν", "Η θερμότητα ρέει από ψυχρό σε θερμό", "Το έργο ισούται πάντα με P·ΔV"], correct: 1, exp: "Ο τρίτος νόμος θέτει το απόλυτο μηδέν ως σημείο αναφοράς: S(0K) = 0 για τέλειο κρύσταλλο." },
+      { q: "Σε ποια συνθήκη μια χημική αντίδραση είναι αυθόρμητη ανεξαρτήτως θερμοκρασίας;", opts: ["ΔH > 0 και ΔS < 0", "ΔH < 0 και ΔS < 0", "ΔH < 0 και ΔS > 0", "ΔH > 0 και ΔS > 0"], correct: 2, exp: "Όταν ΔH < 0 (εξώθερμη) και ΔS > 0, τότε ΔG = ΔH − TΔS είναι πάντα αρνητική ανεξαρτήτως θερμοκρασίας." }
     ]
   },
   {
-    id: 2,
-    title: "Χημική Κινητική",
+    id: 2, title: "Χημική Κινητική",
     questions: [
-      {
-        q: "Τι εκφράζει η εξίσωση Arrhenius;",
-        opts: [
-          "Τη σχέση ταχύτητας–ενέργειας ενεργοποίησης και θερμοκρασίας",
-          "Τη θερμοδυναμική ισορροπία αντίδρασης",
-          "Τον ρυθμό διάχυσης αερίων",
-          "Την αλλαγή ελεύθερης ενέργειας"
-        ],
-        correct: 0,
-        exp: "k = A·e^(−Ea/RT). Η εξίσωση Arrhenius δείχνει πώς η σταθερά ταχύτητας k εξαρτάται εκθετικά από την ενέργεια ενεργοποίησης Eₐ και τη θερμοκρασία T."
-      },
-      {
-        q: "Ποια είναι η μονάδα σταθεράς ταχύτητας αντίδρασης δεύτερης τάξης στο SI;",
-        opts: ["s⁻¹", "mol·L⁻¹·s⁻¹", "L·mol⁻¹·s⁻¹", "L²·mol⁻²·s⁻¹"],
-        correct: 2,
-        exp: "Για αντίδραση 2ης τάξης: rate = k[A][B], άρα k = rate / ([A][B]) → (mol/L/s) / (mol/L)² = L·mol⁻¹·s⁻¹."
-      },
-      {
-        q: "Πώς ορίζεται ο χρόνος ημιζωής (t₁/₂) για αντίδραση πρώτης τάξης;",
-        opts: ["t₁/₂ = k / [A]₀", "t₁/₂ = ln2 / k", "t₁/₂ = 1 / (k·[A]₀)", "t₁/₂ = 2·[A]₀ / k"],
-        correct: 1,
-        exp: "Για 1η τάξη: ln[A] = ln[A]₀ − kt. Ο χρόνος ημιζωής είναι ανεξάρτητος της συγκέντρωσης: t₁/₂ = ln2/k ≈ 0.693/k."
-      },
-      {
-        q: "Τι ρόλο παίζει ο καταλύτης σε μια χημική αντίδραση;",
-        opts: [
-          "Αυξάνει τη συγκέντρωση των αντιδρώντων",
-          "Μειώνει την ενέργεια ενεργοποίησης χωρίς να καταναλώνεται",
-          "Αλλάζει τη θερμοδυναμική ισορροπία",
-          "Αυξάνει τη θερμοκρασία του συστήματος"
-        ],
-        correct: 1,
-        exp: "Ο καταλύτης παρέχει εναλλακτικό μηχανισμό με χαμηλότερη Eₐ. Δεν μεταβάλλει τις θερμοδυναμικές ποσότητες (ΔG, K) και δεν καταναλώνεται στην αντίδραση."
-      }
+      { q: "Τι εκφράζει η εξίσωση Arrhenius;", opts: ["Τη σχέση ταχύτητας–ενέργειας ενεργοποίησης και θερμοκρασίας", "Τη θερμοδυναμική ισορροπία αντίδρασης", "Τον ρυθμό διάχυσης αερίων", "Την αλλαγή ελεύθερης ενέργειας"], correct: 0, exp: "k = A·e^(−Ea/RT). Η εξίσωση Arrhenius δείχνει πώς η σταθερά ταχύτητας k εξαρτάται εκθετικά από την ενέργεια ενεργοποίησης Eₐ και τη θερμοκρασία T." },
+      { q: "Ποια είναι η μονάδα σταθεράς ταχύτητας αντίδρασης δεύτερης τάξης στο SI;", opts: ["s⁻¹", "mol·L⁻¹·s⁻¹", "L·mol⁻¹·s⁻¹", "L²·mol⁻²·s⁻¹"], correct: 2, exp: "Για αντίδραση 2ης τάξης: rate = k[A][B], άρα k = rate / ([A][B]) → L·mol⁻¹·s⁻¹." },
+      { q: "Πώς ορίζεται ο χρόνος ημιζωής (t₁/₂) για αντίδραση πρώτης τάξης;", opts: ["t₁/₂ = k / [A]₀", "t₁/₂ = ln2 / k", "t₁/₂ = 1 / (k·[A]₀)", "t₁/₂ = 2·[A]₀ / k"], correct: 1, exp: "Για 1η τάξη: t₁/₂ = ln2/k ≈ 0.693/k. Είναι ανεξάρτητος της αρχικής συγκέντρωσης." },
+      { q: "Τι ρόλο παίζει ο καταλύτης σε μια χημική αντίδραση;", opts: ["Αυξάνει τη συγκέντρωση των αντιδρώντων", "Μειώνει την ενέργεια ενεργοποίησης χωρίς να καταναλώνεται", "Αλλάζει τη θερμοδυναμική ισορροπία", "Αυξάνει τη θερμοκρασία του συστήματος"], correct: 1, exp: "Ο καταλύτης παρέχει εναλλακτικό μηχανισμό με χαμηλότερη Eₐ. Δεν μεταβάλλει ΔG, K και δεν καταναλώνεται." }
     ]
   },
   {
-    id: 3,
-    title: "Ηλεκτροχημεία",
+    id: 3, title: "Ηλεκτροχημεία",
     questions: [
-      {
-        q: "Ποια είναι η εξίσωση Nernst;",
-        opts: [
-          "E = E° − (RT/nF)·lnQ",
-          "ΔG = −nFE°",
-          "E = E° + (RT/nF)·lnK",
-          "ΔG° = −RT·lnK"
-        ],
-        correct: 0,
-        exp: "Η εξίσωση Nernst: E = E° − (RT/nF)·lnQ συνδέει το δυναμικό κελιού με τις συγκεντρώσεις των αντιδρώντων και προϊόντων."
-      },
-      {
-        q: "Ποια σχέση συνδέει τη μεταβολή Gibbs με το δυναμικό κελιού;",
-        opts: ["ΔG = nRT·lnE", "ΔG = −nFE", "ΔG = nFE°", "ΔG = −RT·lnE"],
-        correct: 1,
-        exp: "ΔG = −nFE, όπου n οι mol ηλεκτρονίων, F η σταθερά Faraday (96485 C/mol), E το δυναμικό κελιού."
-      },
-      {
-        q: "Τι μετράει ο αριθμός μεταφοράς (transport number) ιόντος;",
-        opts: [
-          "Τη μάζα ιόντος που αποτίθεται στην ηλεκτρόλυση",
-          "Το κλάσμα του συνολικού ρεύματος που μεταφέρει κάθε είδος ιόντος",
-          "Την κινητικότητα ιόντος σε ηλεκτρικό πεδίο",
-          "Τη συγκέντρωση ηλεκτρολύτη"
-        ],
-        correct: 1,
-        exp: "t₊ + t₋ = 1. Ο αριθμός μεταφοράς εκφράζει ποιο κλάσμα του συνολικού ηλεκτρικού ρεύματος μεταφέρεται από κάθε είδος ιόντος."
-      },
-      {
-        q: "Τι γίνεται στην άνοδο ενός γαλβανικού κελιού;",
-        opts: ["Αναγωγή — ηλεκτρόνια προστίθενται", "Οξείδωση — ηλεκτρόνια αποβάλλονται", "Δεν γίνεται καμία αντίδραση", "Κατακρήμνιση ιόντων"],
-        correct: 1,
-        exp: "Στην άνοδο γίνεται οξείδωση (απώλεια ηλεκτρονίων). Τα ηλεκτρόνια μεταφέρονται μέσω εξωτερικού κυκλώματος προς την κάθοδο όπου γίνεται αναγωγή."
-      }
+      { q: "Ποια είναι η εξίσωση Nernst;", opts: ["E = E° − (RT/nF)·lnQ", "ΔG = −nFE°", "E = E° + (RT/nF)·lnK", "ΔG° = −RT·lnK"], correct: 0, exp: "Η εξίσωση Nernst: E = E° − (RT/nF)·lnQ συνδέει το δυναμικό κελιού με τις συγκεντρώσεις των αντιδρώντων και προϊόντων." },
+      { q: "Ποια σχέση συνδέει τη μεταβολή Gibbs με το δυναμικό κελιού;", opts: ["ΔG = nRT·lnE", "ΔG = −nFE", "ΔG = nFE°", "ΔG = −RT·lnE"], correct: 1, exp: "ΔG = −nFE, όπου n οι mol ηλεκτρονίων, F η σταθερά Faraday (96485 C/mol), E το δυναμικό κελιού." },
+      { q: "Τι μετράει ο αριθμός μεταφοράς ιόντος;", opts: ["Τη μάζα ιόντος που αποτίθεται στην ηλεκτρόλυση", "Το κλάσμα του συνολικού ρεύματος που μεταφέρει κάθε είδος ιόντος", "Την κινητικότητα ιόντος σε ηλεκτρικό πεδίο", "Τη συγκέντρωση ηλεκτρολύτη"], correct: 1, exp: "t₊ + t₋ = 1. Ο αριθμός μεταφοράς εκφράζει ποιο κλάσμα του συνολικού ρεύματος μεταφέρει κάθε είδος ιόντος." },
+      { q: "Τι γίνεται στην άνοδο ενός γαλβανικού κελιού;", opts: ["Αναγωγή — ηλεκτρόνια προστίθενται", "Οξείδωση — ηλεκτρόνια αποβάλλονται", "Δεν γίνεται καμία αντίδραση", "Κατακρήμνιση ιόντων"], correct: 1, exp: "Στην άνοδο γίνεται οξείδωση (απώλεια ηλεκτρονίων). Τα ηλεκτρόνια μεταφέρονται μέσω εξωτερικού κυκλώματος προς την κάθοδο." }
     ]
   },
   {
-    id: 4,
-    title: "Χημική Ισορροπία",
+    id: 4, title: "Χημική Ισορροπία",
     questions: [
-      {
-        q: "Τι εκφράζει η αρχή Le Chatelier;",
-        opts: [
-          "Ότι η ισορροπία επιτυγχάνεται πάντα σε χαμηλή θερμοκρασία",
-          "Ότι το σύστημα ανταποκρίνεται σε διαταραχή ώστε να αντιταχθεί σε αυτήν",
-          "Ότι η σταθερά ισορροπίας K δεν εξαρτάται από τη θερμοκρασία",
-          "Ότι η πίεση δεν επηρεάζει ισορροπίες αερίων"
-        ],
-        correct: 1,
-        exp: "Αρχή Le Chatelier: αν διαταραχθεί ισορροπία, το σύστημα μετατοπίζεται προς την κατεύθυνση που αντιτίθεται στη διαταραχή."
-      },
-      {
-        q: "Ποια σχέση συνδέει τη σταθερά ισορροπίας K με τη μεταβολή ελεύθερης ενέργειας ΔG°;",
-        opts: ["ΔG° = RT·lnK", "ΔG° = −RT·lnK", "K = ΔG°/RT", "ΔG° = −nF·lnK"],
-        correct: 1,
-        exp: "ΔG° = −RT·lnK. Για αυθόρμητες αντιδράσεις (ΔG° < 0), K > 1 — τα προϊόντα ευνοούνται στην ισορροπία."
-      },
-      {
-        q: "Αν αυξηθεί η θερμοκρασία σε μια εξώθερμη αντίδραση σε ισορροπία, τι συμβαίνει;",
-        opts: [
-          "Η ισορροπία μετατοπίζεται προς τα προϊόντα και το K αυξάνει",
-          "Η ισορροπία μετατοπίζεται προς τα αντιδρώντα και το K μειώνεται",
-          "Το K παραμένει σταθερό αλλά αλλάζει ο ρυθμός",
-          "Η αντίδραση σταματά"
-        ],
-        correct: 1,
-        exp: "Για εξώθερμη αντίδραση (ΔH < 0), αύξηση T ευνοεί την αντίστροφη κατεύθυνση (απορρόφηση θερμότητας), μειώνοντας το K."
-      }
+      { q: "Τι εκφράζει η αρχή Le Chatelier;", opts: ["Ότι η ισορροπία επιτυγχάνεται πάντα σε χαμηλή θερμοκρασία", "Ότι το σύστημα ανταποκρίνεται σε διαταραχή ώστε να αντιταχθεί σε αυτήν", "Ότι η σταθερά K δεν εξαρτάται από τη θερμοκρασία", "Ότι η πίεση δεν επηρεάζει ισορροπίες αερίων"], correct: 1, exp: "Αρχή Le Chatelier: αν διαταραχθεί ισορροπία, το σύστημα μετατοπίζεται προς την κατεύθυνση που αντιτίθεται στη διαταραχή." },
+      { q: "Ποια σχέση συνδέει K με ΔG°;", opts: ["ΔG° = RT·lnK", "ΔG° = −RT·lnK", "K = ΔG°/RT", "ΔG° = −nF·lnK"], correct: 1, exp: "ΔG° = −RT·lnK. Για αυθόρμητες αντιδράσεις (ΔG° < 0), K > 1 — τα προϊόντα ευνοούνται." },
+      { q: "Αν αυξηθεί η θερμοκρασία σε μια εξώθερμη αντίδραση σε ισορροπία, τι συμβαίνει;", opts: ["Η ισορροπία μετατοπίζεται προς τα προϊόντα και K αυξάνει", "Η ισορροπία μετατοπίζεται προς τα αντιδρώντα και K μειώνεται", "K παραμένει σταθερό αλλά αλλάζει ο ρυθμός", "Η αντίδραση σταματά"], correct: 1, exp: "Για εξώθερμη αντίδραση (ΔH < 0), αύξηση T ευνοεί την αντίστροφη κατεύθυνση, μειώνοντας το K." }
     ]
   },
   {
-    id: 5,
-    title: "Φασματοσκοπία & Δομή",
+    id: 5, title: "Φασματοσκοπία & Δομή",
     questions: [
-      {
-        q: "Τι μετράει η φασματοσκοπία UV-Vis;",
-        opts: [
-          "Δονήσεις δεσμών μορίου",
-          "Απορρόφηση φωτός από ηλεκτρονικές μεταβάσεις",
-          "Περιστροφές μορίων σε αέρια φάση",
-          "Πυρηνικές μαγνητικές στροφορμές"
-        ],
-        correct: 1,
-        exp: "Η UV-Vis φασματοσκοπία ανιχνεύει ηλεκτρονικές μεταβάσεις (π → π*, n → π*). Σύμφωνα με τον νόμο Beer-Lambert: A = ε·c·l."
-      },
-      {
-        q: "Τι ορίζει ο νόμος Beer-Lambert;",
-        opts: [
-          "Η απορρόφηση είναι αντιστρόφως ανάλογη της συγκέντρωσης",
-          "Η απορρόφηση είναι ανάλογη της συγκέντρωσης και του μήκους διαδρομής",
-          "Η ένταση φωτός είναι ανεξάρτητη της συγκέντρωσης",
-          "Η απορρόφηση εξαρτάται μόνο από το μήκος κύματος"
-        ],
-        correct: 1,
-        exp: "A = ε·c·l, όπου ε ο μοριακός συντελεστής απορρόφησης, c η συγκέντρωση, l το μήκος διαδρομής. Η σχέση είναι γραμμική για αραιά διαλύματα."
-      }
+      { q: "Τι μετράει η φασματοσκοπία UV-Vis;", opts: ["Δονήσεις δεσμών μορίου", "Απορρόφηση φωτός από ηλεκτρονικές μεταβάσεις", "Περιστροφές μορίων σε αέρια φάση", "Πυρηνικές μαγνητικές στροφορμές"], correct: 1, exp: "Η UV-Vis φασματοσκοπία ανιχνεύει ηλεκτρονικές μεταβάσεις (π → π*, n → π*). Νόμος Beer-Lambert: A = ε·c·l." },
+      { q: "Τι ορίζει ο νόμος Beer-Lambert;", opts: ["Η απορρόφηση είναι αντιστρόφως ανάλογη της συγκέντρωσης", "Η απορρόφηση είναι ανάλογη της συγκέντρωσης και του μήκους διαδρομής", "Η ένταση φωτός είναι ανεξάρτητη της συγκέντρωσης", "Η απορρόφηση εξαρτάται μόνο από το μήκος κύματος"], correct: 1, exp: "A = ε·c·l, όπου ε ο μοριακός συντελεστής απορρόφησης, c η συγκέντρωση, l το μήκος διαδρομής." }
     ]
   },
   {
-    id: 6,
-    "title": "Chemical Kinetics",
-    "questions": [
-        {
-          q: "What is the branch of chemistry that deals with the study of reaction rates and their mechanisms?",
-          opts: [
-              "Thermodynamics",
-              "Chemical Equilibrium",
-              "Chemical Kinetics",
-              "Electrochemistry"
-          ],
-          correct: 2,
-          exp: "Chemical kinetics is the branch of chemistry that studies reaction rates and mechanisms. The word 'kinetics' is derived from the Greek word 'kinesis' meaning movement."
-        },
-        {
-          q: "What does thermodynamics tell us about a chemical reaction, as opposed to chemical kinetics?",
-          opts: [
-              "The rate of the reaction",
-              "The mechanism of the reaction",
-              "Only the feasibility of the reaction",
-              "The concentration of products at equilibrium"
-          ],
-          correct: 2,
-          exp: "Thermodynamics tells us only about the feasibility of a reaction (whether ΔG < 0), whereas chemical kinetics tells us about the rate at which the reaction proceeds."
-        },
-        {
-          q: "Why is the rate of disappearance of a reactant multiplied by –1 when expressing the rate of reaction?",
-          opts: [
-              "To account for stoichiometric coefficients",
-              "Because the concentration of reactants is decreasing, making Δ[R] negative, and rate must be positive",
-              "To convert units from mol/L to atm",
-              "To match the rate of appearance of products exactly"
-          ],
-          correct: 1,
-          exp: "Since Δ[R] is negative (reactant concentration decreases over time), multiplying by –1 ensures that the rate of reaction is expressed as a positive quantity."
-        },
-        {
-          q: "How is the instantaneous rate of a reaction determined graphically?",
-          opts: [
-              "By calculating the area under the concentration-time curve",
-              "By drawing a tangent to the concentration-time curve at a specific time t and calculating its slope",
-              "By dividing the total change in concentration by total time",
-              "By plotting rate vs. temperature and finding the intercept"
-          ],
-          correct: 1,
-          exp: "The instantaneous rate is determined by drawing a tangent to the concentration vs. time curve at the desired time point; the slope of that tangent gives the instantaneous rate."
-        },
-        {
-          q: "For the reaction 2HI(g) → H₂(g) + I₂(g), how is the rate of reaction correctly expressed?",
-          opts: [
-              "Rate = –Δ[HI]/Δt",
-              "Rate = –(1/2)Δ[HI]/Δt = Δ[H₂]/Δt = Δ[I₂]/Δt",
-              "Rate = –2Δ[HI]/Δt",
-              "Rate = Δ[H₂]/Δt + Δ[I₂]/Δt"
-          ],
-          correct: 1,
-          exp: "When stoichiometric coefficients are not equal to one, the rate terms are divided by their respective coefficients. Since 2 moles of HI decompose, the rate is –(1/2)Δ[HI]/Δt, making it equal to Δ[H₂]/Δt and Δ[I₂]/Δt."
-        },
-        {
-          q: "What are the typical units of the rate of a reaction when concentration is in mol L⁻¹ and time is in seconds?",
-          opts: [
-              "mol L",
-              "mol L⁻¹ s",
-              "mol L⁻¹ s⁻¹",
-              "mol⁻¹ L s⁻¹"
-          ],
-          correct: 2,
-          exp: "Rate is defined as change in concentration per unit time, so its units are concentration × time⁻¹, which equals mol L⁻¹ s⁻¹ under the given conditions."
-        },
-        {
-          q: "Which of the following is an example of a very fast (instantaneous) chemical reaction?",
-          opts: [
-              "Rusting of iron",
-              "Inversion of cane sugar",
-              "Hydrolysis of starch",
-              "Precipitation of silver chloride by mixing AgNO₃ and NaCl solutions"
-          ],
-          correct: 3,
-          exp: "Ionic reactions such as the precipitation of silver chloride occur instantaneously. Rusting of iron is a very slow reaction, while sugar inversion and starch hydrolysis proceed at moderate speeds."
-        },
-        {
-          q: "What is the significance of the diamond-to-graphite conversion example mentioned in the text?",
-          opts: [
-              "It shows that thermodynamics cannot predict reaction feasibility",
-              "It demonstrates that a thermodynamically feasible reaction can have an extremely slow rate, making it imperceptible",
-              "It proves that kinetics is more important than thermodynamics",
-              "It illustrates that pressure has no effect on reaction rate"
-          ],
-          correct: 1,
-          exp: "Although thermodynamic data indicate that diamond should convert to graphite (ΔG < 0), the rate of this conversion is so slow that it is not perceptible, illustrating that feasibility does not guarantee a measurable rate."
-        },
-        {
-          q: "Which factors are stated in the text to affect the rate of a chemical reaction?",
-          opts: [
-              "Color, pressure, and volume",
-              "Concentration, temperature, pressure, and catalyst",
-              "pH, ionic strength, and solvent polarity",
-              "Molecular weight, density, and viscosity"
-          ],
-          correct: 1,
-          exp: "The text explicitly states that concentration, temperature, pressure (for gases), and catalyst are the main factors that affect the rate of a chemical reaction."
-        },
-        {
-          q: "What happens to the average rate of the hydrolysis of butyl chloride (C₄H₉Cl) as the reaction proceeds over time?",
-          opts: [
-              "It remains constant throughout the reaction",
-              "It increases as reactants are consumed",
-              "It falls as the concentration of the reactant decreases over time",
-              "It fluctuates unpredictably"
-          ],
-          correct: 2,
-          exp: "As shown in Table 3.1, the average rate of hydrolysis of butyl chloride decreases from 1.90 × 10⁻⁴ mol L⁻¹ s⁻¹ to 0.4 × 10⁻⁴ mol L⁻¹ s⁻¹ because the reactant concentration decreases as the reaction proceeds."
-        }
+    id: 6, title: "Chemical Kinetics (Book)",
+    questions: [
+      { q: "What is chemical kinetics?", opts: ["The study of thermodynamic feasibility", "The branch of chemistry studying reaction rates and mechanisms", "The study of chemical equilibrium", "The branch dealing with electrochemical cells"], correct: 1, exp: "Chemical kinetics is the branch of chemistry that studies reaction rates and mechanisms. 'Kinetics' derives from the Greek 'kinesis' meaning movement." },
+      { q: "Why is the rate of disappearance of a reactant multiplied by –1?", opts: ["To account for stoichiometric coefficients", "Because Δ[R] is negative and rate must be positive", "To convert units from mol/L to atm", "To match the rate of appearance of products"], correct: 1, exp: "Since Δ[R] is negative (reactant concentration decreases), multiplying by –1 ensures the rate is expressed as a positive quantity." },
+      { q: "How is the instantaneous rate determined graphically?", opts: ["Area under the concentration-time curve", "Tangent to the concentration-time curve at time t", "Total concentration change divided by total time", "Slope of rate vs. temperature plot"], correct: 1, exp: "The instantaneous rate is the slope of the tangent drawn to the concentration vs. time curve at the desired time point." },
+      { q: "For 2HI(g) → H₂(g) + I₂(g), the correct rate expression is:", opts: ["Rate = –Δ[HI]/Δt", "Rate = –(1/2)Δ[HI]/Δt = Δ[H₂]/Δt", "Rate = –2Δ[HI]/Δt", "Rate = Δ[H₂]/Δt + Δ[I₂]/Δt"], correct: 1, exp: "Rate terms are divided by stoichiometric coefficients. Rate = –(1/2)Δ[HI]/Δt = Δ[H₂]/Δt = Δ[I₂]/Δt." },
+      { q: "Units of rate constant for a second-order reaction:", opts: ["s⁻¹", "mol L⁻¹ s⁻¹", "L mol⁻¹ s⁻¹", "L² mol⁻² s⁻¹"], correct: 2, exp: "For 2nd order: k = rate/([A][B]) → (mol L⁻¹ s⁻¹)/(mol L⁻¹)² = L mol⁻¹ s⁻¹." },
+      { q: "Which is an example of an instantaneous chemical reaction?", opts: ["Rusting of iron", "Inversion of cane sugar", "Hydrolysis of starch", "Precipitation of AgCl when AgNO₃ and NaCl are mixed"], correct: 3, exp: "Ionic reactions like AgCl precipitation occur instantaneously. Rusting is very slow; sugar inversion and starch hydrolysis are moderate." },
+      { q: "What does the diamond-to-graphite example illustrate?", opts: ["Thermodynamics cannot predict feasibility", "A feasible reaction can have an imperceptibly slow rate", "Kinetics is more important than thermodynamics", "Pressure has no effect on reaction rate"], correct: 1, exp: "Although ΔG < 0 for diamond → graphite, the rate is so slow it is imperceptible — feasibility does not guarantee a measurable rate." },
+      { q: "Which factors affect the rate of a chemical reaction?", opts: ["Color, pressure, volume", "Concentration, temperature, pressure, catalyst", "pH, ionic strength, solvent polarity", "Molecular weight, density, viscosity"], correct: 1, exp: "Concentration, temperature, pressure (for gases), and catalyst are the main factors affecting reaction rate." },
+      { q: "What happens to the average rate of butyl chloride hydrolysis over time?", opts: ["Remains constant", "Increases as reactants are consumed", "Falls as reactant concentration decreases", "Fluctuates unpredictably"], correct: 2, exp: "The average rate decreases over time because reactant concentration decreases as the reaction proceeds." },
+      { q: "What does thermodynamics tell us vs. chemical kinetics?", opts: ["Rate of reaction", "Mechanism of reaction", "Only the feasibility (ΔG)", "Activation energy"], correct: 2, exp: "Thermodynamics tells us only whether a reaction is feasible (ΔG < 0). Kinetics tells us the rate at which it actually proceeds." }
     ]
-}
+  }
 ];
 
 // ============================================================
-// APP LOGIC — Δεν χρειάζεται να τροποποιήσεις παρακάτω
+// STATE
 // ============================================================
-let state = {
-  progress: {},
-  currentChapter: null,
-  currentQIdx: 0,
-  answered: false,
-  sessionCorrect: 0,
-  sessionTotal: 0
+let DB = {
+  progress: {},      // {chId: {done, correct}}
+  rework: [],        // [{chId, qIdx}]
+  history: [],       // [{chId, chTitle, correct, total, date}]
+  flags: [],         // [{chId, qIdx}]
+  streak: { lastDate: null, days: 0 },
+  studyDays: []      // last 28 days ISO strings
 };
 
-function loadState() {
-  try {
-    const s = localStorage.getItem('physChem_v1_progress');
-    if (s) state.progress = JSON.parse(s);
-  } catch(e) {}
+let session = {
+  chapter: null, qIdx: 0, answered: false,
+  correct: 0, total: 0,
+  wrongInSession: [],   // {chId, qIdx}
+  isReworkMode: false,
+  reworkQueue: []
+};
+
+function loadDB() {
+  try { const s = localStorage.getItem('pcq_v2'); if (s) DB = JSON.parse(s); } catch(e) {}
+}
+function saveDB() {
+  try { localStorage.setItem('pcq_v2', JSON.stringify(DB)); } catch(e) {}
+}
+function getProgress(chId) { return DB.progress[chId] || { done: 0, correct: 0 }; }
+
+// ============================================================
+// STREAK
+// ============================================================
+function updateStreak() {
+  const today = new Date().toISOString().slice(0,10);
+  if (DB.studyDays[DB.studyDays.length-1] === today) return;
+  DB.studyDays.push(today);
+  if (DB.studyDays.length > 28) DB.studyDays = DB.studyDays.slice(-28);
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+  if (DB.streak.lastDate === yesterday || DB.streak.lastDate === today) {
+    DB.streak.days++;
+  } else if (DB.streak.lastDate !== today) {
+    DB.streak.days = 1;
+  }
+  DB.streak.lastDate = today;
+  saveDB();
 }
 
-function saveState() {
-  try { localStorage.setItem('physChem_v1_progress', JSON.stringify(state.progress)); } catch(e) {}
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  const links = document.querySelectorAll('.nav-link');
+  const map = {home:0, dashboard:1, history:2, rework:3};
+  if (map[name] !== undefined) links[map[name]].classList.add('active');
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'history') renderHistory();
+  if (name === 'rework') renderRework();
+  if (name === 'home') renderHome();
 }
 
-function getChapterProgress(chId) {
-  return state.progress[chId] || { done: 0, correct: 0 };
-}
+function goHome() { showPage('home'); }
 
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
+// ============================================================
+// HOME RENDER
+// ============================================================
 function renderHome() {
-  let totalDone = 0, totalCorrect = 0;
+  // Stats
+  let totalDone = 0, totalCorrect = 0, totalAttempts = DB.history.length;
+  CHAPTERS.forEach(ch => { const p = getProgress(ch.id); totalDone += p.done; totalCorrect += p.correct; });
+  const avgScore = totalAttempts > 0 ? Math.round(DB.history.reduce((a,h) => a + Math.round(h.correct/h.total*100), 0) / totalAttempts) : null;
+  const reworkCount = DB.rework.length;
+  const mastered = CHAPTERS.filter(ch => { const p = getProgress(ch.id); return p.done > 0 && Math.round(p.correct/p.done*100) >= 80; }).length;
+  const readiness = Math.round((mastered / CHAPTERS.length) * 50 + (avgScore ? avgScore * 0.5 : 0));
+
+  document.getElementById('heroAttempts').textContent = totalAttempts;
+  document.getElementById('heroAvg').textContent = avgScore ? avgScore + '%' : '—';
+  document.getElementById('heroRework').textContent = reworkCount;
+  document.getElementById('heroStreak').textContent = DB.streak.days;
+  document.getElementById('heroSub').textContent = `${CHAPTERS.reduce((a,c)=>a+c.questions.length,0)} ερωτήσεις σε ${CHAPTERS.length} κεφάλαια`;
+  document.getElementById('heroDueNum').textContent = reworkCount;
+
+  // Readiness ring
+  document.getElementById('readinessNum').textContent = readiness;
+  const circumference = 314;
+  const offset = circumference - (readiness / 100) * circumference;
+  document.getElementById('readinessArc').setAttribute('stroke-dashoffset', offset);
+
+  // Nav stats
+  document.getElementById('navTotal').textContent = totalDone;
+  document.getElementById('navAttempts').textContent = totalAttempts;
+  document.getElementById('streakNum').textContent = DB.streak.days;
+
+  // Rework badge in nav
+  const rwBadge = document.getElementById('reworkCount');
+  if (reworkCount > 0) { rwBadge.textContent = reworkCount; rwBadge.style.display = 'inline'; }
+  else { rwBadge.style.display = 'none'; }
+
+  // Streak dots
+  const today = new Date().toISOString().slice(0,10);
+  const dots = document.getElementById('streakDots');
+  dots.innerHTML = '';
+  for (let i = 27; i >= 0; i--) {
+    const d = new Date(Date.now() - i * 86400000).toISOString().slice(0,10);
+    const div = document.createElement('div');
+    div.className = 'streak-dot' + (DB.studyDays.includes(d) ? (d === today ? ' today' : ' done') : '');
+    dots.appendChild(div);
+  }
+
+  // Chapter grid
   const grid = document.getElementById('chapterGrid');
   grid.innerHTML = '';
-
   CHAPTERS.forEach(ch => {
-    const p = getChapterProgress(ch.id);
-    totalDone += p.done;
-    totalCorrect += p.correct;
-    const pct = ch.questions.length > 0 ? Math.round((p.done / ch.questions.length) * 100) : 0;
-    const isDone = pct === 100;
-
+    const p = getProgress(ch.id);
+    const pct = p.done > 0 ? Math.round((p.correct / p.done) * 100) : 0;
+    const covPct = Math.round((p.done / ch.questions.length) * 100);
+    const isDone = covPct === 100;
+    const flagsInCh = DB.flags.filter(f => f.chId === ch.id).length;
+    const reworkInCh = DB.rework.filter(r => r.chId === ch.id).length;
     const card = document.createElement('div');
-    card.className = 'chapter-card' + (isDone ? ' done' : '');
+    card.className = 'chapter-card' + (isDone && pct >= 80 ? ' done' : '');
     card.innerHTML = `
-      <div class="ch-meta">
-        <span class="ch-num">Κεφ. ${ch.id}</span>
-        ${isDone ? '<span class="ch-check">✓</span>' : ''}
+      <div class="ch-top">
+        <span class="ch-num-badge">Κεφ. ${ch.id}</span>
+        ${isDone && pct >= 80 ? '<span class="ch-check">✓</span>' : ''}
       </div>
       <div class="ch-title">${ch.title}</div>
-      <div class="ch-count">${ch.questions.length} ερωτήσεις · ${p.correct}/${p.done} σωστές</div>
-      <div class="ch-bar"><div class="ch-fill" style="width:${pct}%"></div></div>
+      <div class="ch-meta">${ch.questions.length} ερωτήσεις${reworkInCh > 0 ? ` · <span style="color:var(--red)">↺ ${reworkInCh}</span>` : ''}${flagsInCh > 0 ? ` · 🚩 ${flagsInCh}` : ''}</div>
+      <div class="ch-bar"><div class="ch-fill" style="width:${covPct}%"></div></div>
+      <div class="ch-footer"><span>${covPct}% covered</span><span style="color:${pct>=80?'var(--green-dark)':pct>=50?'#B45309':'var(--red)'}; font-weight:600">${p.done>0?pct+'% acc':'—'}</span></div>
     `;
     card.onclick = () => startChapter(ch.id);
     grid.appendChild(card);
   });
-
-  document.getElementById('totalDone').textContent = totalDone;
-  document.getElementById('totalCorrect').textContent = totalCorrect;
-  document.getElementById('totalPct').textContent = totalDone > 0 ? Math.round(totalCorrect / totalDone * 100) + '%' : '—';
+  document.getElementById('chaptersCount').textContent = CHAPTERS.length + ' κεφάλαια';
 }
 
+// ============================================================
+// QUIZ
+// ============================================================
 function startChapter(chId) {
-  state.currentChapter = CHAPTERS.find(c => c.id === chId);
-  state.currentQIdx = 0;
-  state.sessionCorrect = 0;
-  state.sessionTotal = 0;
-  state.answered = false;
-  document.getElementById('quizTitle').textContent = state.currentChapter.title;
-  showScreen('quizScreen');
-  renderQuestion();
+  session.chapter = CHAPTERS.find(c => c.id === chId);
+  session.qIdx = 0; session.correct = 0; session.total = 0;
+  session.answered = false; session.wrongInSession = [];
+  session.isReworkMode = false;
+  document.getElementById('quizTitle').textContent = session.chapter.title;
+  showPage('quiz'); renderQuestion();
+  updateStreak();
+}
+
+function startRework() {
+  if (DB.rework.length === 0) return;
+  session.reworkQueue = [...DB.rework];
+  session.isReworkMode = true;
+  session.qIdx = 0; session.correct = 0; session.total = 0;
+  session.answered = false; session.wrongInSession = [];
+  const firstItem = session.reworkQueue[0];
+  session.chapter = CHAPTERS.find(c => c.id === firstItem.chId);
+  document.getElementById('quizTitle').textContent = 'Rework Queue';
+  showPage('quiz'); renderReworkQuestion();
+  updateStreak();
+}
+
+function getCurrentQuestion() {
+  if (session.isReworkMode) {
+    const item = session.reworkQueue[session.qIdx];
+    const ch = CHAPTERS.find(c => c.id === item.chId);
+    return { q: ch.questions[item.qIdx], ch };
+  }
+  return { q: session.chapter.questions[session.qIdx], ch: session.chapter };
+}
+
+function renderReworkQuestion() {
+  const item = session.reworkQueue[session.qIdx];
+  const ch = CHAPTERS.find(c => c.id === item.chId);
+  session.chapter = ch;
+  renderQuestionUI(ch.questions[item.qIdx], session.qIdx + 1, session.reworkQueue.length);
 }
 
 function renderQuestion() {
-  const ch = state.currentChapter;
-  const q = ch.questions[state.currentQIdx];
-  const total = ch.questions.length;
+  const ch = session.chapter;
+  renderQuestionUI(ch.questions[session.qIdx], session.qIdx + 1, ch.questions.length);
+}
 
-  document.getElementById('quizProgress').style.width = Math.round((state.currentQIdx / total) * 100) + '%';
-  document.getElementById('quizProgressText').textContent = (state.currentQIdx + 1) + ' / ' + total;
+function renderQuestionUI(q, current, total) {
+  document.getElementById('quizProgress').style.width = Math.round(((current-1) / total) * 100) + '%';
+  document.getElementById('quizProgressText').textContent = current + ' / ' + total;
   document.getElementById('questionText').textContent = q.q;
   document.getElementById('explanation').className = 'explanation';
   document.getElementById('explanation').innerHTML = '';
   document.getElementById('nextBtn').style.display = 'none';
-  state.answered = false;
+  session.answered = false;
 
-  const letters = ['Α', 'Β', 'Γ', 'Δ'];
+  // Flag button
+  const chId = session.chapter.id;
+  const qIdx = session.isReworkMode ? session.reworkQueue[session.qIdx].qIdx : session.qIdx;
+  const isFlagged = DB.flags.some(f => f.chId === chId && f.qIdx === qIdx);
+  const flagBtn = document.getElementById('flagBtn');
+  flagBtn.className = 'flag-btn' + (isFlagged ? ' flagged' : '');
+  flagBtn.textContent = isFlagged ? '🚩 Flagged' : '🚩 Flag';
+
+  const letters = ['Α','Β','Γ','Δ'];
   const container = document.getElementById('optionsContainer');
   container.innerHTML = '';
-
   q.opts.forEach((opt, i) => {
     const div = document.createElement('div');
     div.className = 'option';
@@ -777,15 +625,27 @@ function renderQuestion() {
   });
 }
 
-function selectAnswer(idx) {
-  if (state.answered) return;
-  state.answered = true;
+function toggleFlag() {
+  const chId = session.chapter.id;
+  const qIdx = session.isReworkMode ? session.reworkQueue[session.qIdx].qIdx : session.qIdx;
+  const idx = DB.flags.findIndex(f => f.chId === chId && f.qIdx === qIdx);
+  if (idx >= 0) DB.flags.splice(idx, 1);
+  else DB.flags.push({ chId, qIdx });
+  saveDB();
+  const isFlagged = idx < 0;
+  const flagBtn = document.getElementById('flagBtn');
+  flagBtn.className = 'flag-btn' + (isFlagged ? ' flagged' : '');
+  flagBtn.textContent = isFlagged ? '🚩 Flagged' : '🚩 Flag';
+}
 
-  const q = state.currentChapter.questions[state.currentQIdx];
-  const opts = document.querySelectorAll('.option');
+function selectAnswer(idx) {
+  if (session.answered) return;
+  session.answered = true;
+  const { q, ch } = getCurrentQuestion();
+  const realQIdx = session.isReworkMode ? session.reworkQueue[session.qIdx].qIdx : session.qIdx;
   const isCorrect = idx === q.correct;
 
-  opts.forEach((o, i) => {
+  document.querySelectorAll('.option').forEach((o, i) => {
     o.classList.add('disabled');
     if (i === q.correct) o.classList.add('correct');
     else if (i === idx) o.classList.add('wrong');
@@ -795,56 +655,163 @@ function selectAnswer(idx) {
   expEl.innerHTML = '<strong>Επεξήγηση:</strong> ' + q.exp;
   expEl.classList.add('show');
 
-  if (isCorrect) state.sessionCorrect++;
-  state.sessionTotal++;
+  if (isCorrect) {
+    session.correct++;
+    // Remove from rework if was there
+    DB.rework = DB.rework.filter(r => !(r.chId === ch.id && r.qIdx === realQIdx));
+  } else {
+    session.wrongInSession.push({ chId: ch.id, qIdx: realQIdx });
+    // Add to rework if not already there
+    if (!DB.rework.some(r => r.chId === ch.id && r.qIdx === realQIdx)) {
+      DB.rework.push({ chId: ch.id, qIdx: realQIdx });
+    }
+  }
+  session.total++;
 
-  const p = getChapterProgress(state.currentChapter.id);
+  // Update chapter progress
+  const p = getProgress(ch.id);
   p.done = (p.done || 0) + 1;
   if (isCorrect) p.correct = (p.correct || 0) + 1;
-  state.progress[state.currentChapter.id] = p;
-  saveState();
+  DB.progress[ch.id] = p;
+  saveDB();
 
   const nextBtn = document.getElementById('nextBtn');
-  nextBtn.textContent = state.currentQIdx < state.currentChapter.questions.length - 1
-    ? 'Επόμενη →' : 'Δες αποτελέσματα →';
+  const hasMore = session.isReworkMode ? session.qIdx < session.reworkQueue.length - 1 : session.qIdx < session.chapter.questions.length - 1;
+  nextBtn.textContent = hasMore ? 'Επόμενη →' : 'Δες αποτελέσματα →';
   nextBtn.style.display = 'block';
 }
 
 function nextQuestion() {
-  if (state.currentQIdx < state.currentChapter.questions.length - 1) {
-    state.currentQIdx++;
-    renderQuestion();
+  const hasMore = session.isReworkMode ? session.qIdx < session.reworkQueue.length - 1 : session.qIdx < session.chapter.questions.length - 1;
+  if (hasMore) {
+    session.qIdx++;
+    if (session.isReworkMode) renderReworkQuestion();
+    else renderQuestion();
   } else {
-    showResults();
+    finishSession();
   }
 }
 
-function showResults() {
-  const pct = Math.round((state.sessionCorrect / state.sessionTotal) * 100);
+function finishSession() {
+  const pct = Math.round((session.correct / session.total) * 100);
+  DB.history.unshift({ chId: session.chapter.id, chTitle: session.isReworkMode ? 'Rework Queue' : session.chapter.title, correct: session.correct, total: session.total, date: new Date().toISOString() });
+  if (DB.history.length > 50) DB.history = DB.history.slice(0, 50);
+  saveDB();
+
   document.getElementById('resultScore').textContent = pct + '%';
-  document.getElementById('resultLabel').textContent =
-    pct >= 80 ? 'Εξαιρετικό — συνέχισε έτσι!' :
-    pct >= 60 ? 'Καλή προσπάθεια, λίγο ακόμα!' :
-    'Χρειάζεται περισσότερη εξάσκηση';
-  document.getElementById('resCorrect').textContent = state.sessionCorrect;
-  document.getElementById('resWrong').textContent = state.sessionTotal - state.sessionCorrect;
-  document.getElementById('resTotal').textContent = state.sessionTotal;
-  showScreen('resultsScreen');
+  document.getElementById('resultLabel').textContent = pct >= 80 ? '🎉 Εξαιρετικό!' : pct >= 60 ? '👍 Καλή προσπάθεια!' : '📚 Χρειάζεται περισσότερη εξάσκηση';
+  document.getElementById('resCorrect').textContent = session.correct;
+  document.getElementById('resWrong').textContent = session.total - session.correct;
+  document.getElementById('resTotal').textContent = session.total;
+  showPage('results');
 }
 
-function retryChapter() { startChapter(state.currentChapter.id); }
+function retryChapter() {
+  if (session.isReworkMode) startRework();
+  else startChapter(session.chapter.id);
+}
 
-function goHome() { renderHome(); showScreen('homeScreen'); }
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashboard() {
+  let totalDone = 0, totalCorrect = 0;
+  CHAPTERS.forEach(ch => { const p = getProgress(ch.id); totalDone += p.done; totalCorrect += p.correct; });
+  const avgScore = DB.history.length > 0 ? Math.round(DB.history.slice(0,10).reduce((a,h) => a + Math.round(h.correct/h.total*100), 0) / Math.min(DB.history.length,10)) : null;
+  const mastered = CHAPTERS.filter(ch => { const p = getProgress(ch.id); return p.done > 0 && Math.round(p.correct/p.done*100) >= 80; }).length;
 
-function resetAll() {
-  if (confirm('Είσαι σίγουρη ότι θέλεις να διαγράψεις όλη την πρόοδο;')) {
-    state.progress = {};
-    saveState();
-    renderHome();
+  document.getElementById('dTotal').textContent = totalDone;
+  document.getElementById('dAvg').textContent = avgScore ? avgScore + '%' : '—';
+  document.getElementById('dMastered').textContent = mastered;
+  document.getElementById('dRework').textContent = DB.rework.length;
+
+  // Chapter bars
+  const bars = document.getElementById('chapterBars');
+  bars.innerHTML = '';
+  CHAPTERS.forEach(ch => {
+    const p = getProgress(ch.id);
+    const pct = p.done > 0 ? Math.round(p.correct / p.done * 100) : 0;
+    const fillClass = pct >= 80 ? '' : pct >= 50 ? 'mid' : 'low';
+    bars.innerHTML += `
+      <div class="chapter-bar-row">
+        <div class="chapter-bar-label">${ch.title}</div>
+        <div class="chapter-bar-track"><div class="chapter-bar-fill ${fillClass}" style="width:${pct}%"></div></div>
+        <div class="chapter-bar-pct">${p.done > 0 ? pct + '%' : '—'}</div>
+      </div>`;
+  });
+
+  // Recent sessions
+  const recent = document.getElementById('recentList');
+  if (DB.history.length === 0) {
+    recent.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:1rem 0;">Δεν υπάρχουν συνεδρίες ακόμα</div>';
+    return;
   }
+  recent.innerHTML = DB.history.slice(0,6).map(h => {
+    const pct = Math.round(h.correct/h.total*100);
+    const cls = pct >= 80 ? 'good' : 'bad';
+    const date = new Date(h.date).toLocaleDateString('el-GR', {day:'numeric',month:'short'});
+    return `<div class="recent-item">
+      <div class="recent-badge ${cls}">${pct}%</div>
+      <div class="recent-name">${h.chTitle}</div>
+      <div class="recent-score">${h.correct}/${h.total} · ${date}</div>
+    </div>`;
+  }).join('');
 }
 
-loadState();
+// ============================================================
+// REWORK
+// ============================================================
+function renderRework() {
+  const content = document.getElementById('reworkContent');
+  if (DB.rework.length === 0) {
+    content.innerHTML = `<div class="rework-empty"><div class="rework-empty-icon">🎯</div><div class="rework-empty-title">Δεν υπάρχουν ερωτήσεις για rework!</div><p>Κάνε quiz και οι λάθος ερωτήσεις θα εμφανιστούν εδώ αυτόματα.</p></div>`;
+    return;
+  }
+  const items = DB.rework.map(r => {
+    const ch = CHAPTERS.find(c => c.id === r.chId);
+    const q = ch ? ch.questions[r.qIdx] : null;
+    if (!q) return '';
+    return `<div class="rework-item">
+      <div class="rework-icon">❌</div>
+      <div><div class="rework-q">${q.q}</div><div class="rework-meta">${ch.title}</div></div>
+    </div>`;
+  }).join('');
+  content.innerHTML = `
+    <div class="rework-list">${items}</div>
+    <div class="rework-actions">
+      <button class="btn-primary" onclick="startRework()">▶ Ξεκίνα Rework (${DB.rework.length} ερωτήσεις)</button>
+      <button class="btn-secondary" onclick="clearRework()">Καθαρισμός λίστας</button>
+    </div>`;
+}
+
+function clearRework() {
+  if (confirm('Να διαγραφεί η λίστα rework;')) { DB.rework = []; saveDB(); renderRework(); renderHome(); }
+}
+
+// ============================================================
+// HISTORY
+// ============================================================
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  if (DB.history.length === 0) {
+    list.innerHTML = '<div class="history-empty">Δεν υπάρχουν συνεδρίες ακόμα. Ξεκίνα quiz!</div>';
+    return;
+  }
+  list.innerHTML = '<div class="history-list">' + DB.history.map(h => {
+    const pct = Math.round(h.correct/h.total*100);
+    const cls = pct >= 80 ? 'good' : pct >= 60 ? 'mid' : 'bad';
+    const date = new Date(h.date).toLocaleDateString('el-GR', {day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'});
+    return `<div class="history-item">
+      <div class="history-score-badge ${cls}">${pct}%</div>
+      <div class="history-info"><div class="history-title">${h.chTitle}</div><div class="history-meta">${h.correct}/${h.total} σωστές · ${date}</div></div>
+    </div>`;
+  }).join('') + '</div>';
+}
+
+// ============================================================
+// INIT
+// ============================================================
+loadDB();
 renderHome();
 </script>
 </body>
