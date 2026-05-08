@@ -320,9 +320,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
         <div class="quiz-meta">Ερώτηση <strong id="qNum">1</strong> από <strong id="qTotal">?</strong> · <span id="qChapter"></span></div>
         <div class="quiz-tools">
           <div class="timer" id="timerDisplay">00:00</div>
-          <button class="tool-btn" id="peekBtn" onclick="togglePeek()">💡 Peek</button>
-          <button class="tool-btn" id="endBtn" onclick="confirmEnd()">End test</button>
-          <button class="tool-btn" id="flagBtn" onclick="toggleFlag()">🚩 Flag</button>
         </div>
       </div>
       <div class="prog-row">
@@ -340,7 +337,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
         <div class="footer-left">
           <button class="btn-secondary" onclick="prevQuestion()" id="prevBtn">← Prev</button>
         </div>
-        <div style="display:flex;gap:8px;">
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="tool-btn" id="peekBtn" onclick="togglePeek()">💡 Peek</button>
+          <button class="tool-btn" id="endBtn" onclick="confirmEnd()">End test</button>
+          <button class="tool-btn" id="flagBtn" onclick="toggleFlag()">🚩 Flag</button>
           <button class="btn-primary" id="submitBtn" onclick="submitAnswer()">Submit answer</button>
           <button class="btn-primary" id="nextBtn" style="display:none;" onclick="nextQuestion()">Επόμενη →</button>
         </div>
